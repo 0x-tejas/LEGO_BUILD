@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BrickQuest 3D — LEGO®-Style Puzzle Builder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+   </script>
+   
+   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+     html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', system-ui, sans-serif; background: #2c2c80; color: #e4e4e7; } 
+    #app-shell { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+    /* Header */
+    #header { disply: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: #18181b; border-bottom: 1px solid #27272a; z-index: 10; gap: 16px; flex-shrink: 0; }
+     #header .logo { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, #F5CD2F, #C91A09); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    #header .step-badge { background: #27272a; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #a1a1aa; }
+    #header .step-badge { background: #27272a; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #a1a1aa; }
+    #header .step-badge strong { color: #F5CD2F; }
+    #puzzle-select { background: #27272a; color: #e4e4e7 border: 1px sold #3f3f46; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-family: inherit; cursor: pointer; }
+
+     /* Viewport Row */
+      #viewport-row{ display: flex; flex: 1; min-height: 0; position: relative; }
+
+ /* Main Viewport */
+ #main-vp-container { flex: 7; position: relative; min-width: 0; border-right: 2px solid #27272a; background: radial-gradient(ellipse at center, #1a1a24 0%, #0a0a10 100%); }
+#main-vp-container canvas { display: block; }
+ #main-vp-container .vp-label { position: absolute; top: 12px; left: 16px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #71717a; pointer-events: none; }
+
+/* Sidebar Viewport */
+ #sidebar-vp-container { flex: 3; position: relative; min-width: 280px; background: radial-gradient(ellipse at center, #14141e 0%, #0a0a10 100%); }
+ #sidebar-vp-container .vp-label { position: absolute; t op: 12px; left: 16px; font-size: 0.75rem; font-weight: 600; text-trnsform: uppercase; letter-spacing:0.08em; color: #71717a; pointer-events: none; }
+   </style>
+
+
