@@ -37,7 +37,71 @@
 
 /* Sidebar Viewport */
  #sidebar-vp-container { flex: 3; position: relative; min-width: 280px; background: radial-gradient(ellipse at center, #14141e 0%, #0a0a10 100%); }
+ #sidebar-vp-container canvas { display: bloks; }
  #sidebar-vp-container .vp-label { position: absolute; t op: 12px; left: 16px; font-size: 0.75rem; font-weight: 600; text-trnsform: uppercase; letter-spacing:0.08em; color: #71717a; pointer-events: none; }
-   </style>
+
+ /* rotation hint overlay */ 
+ #rotation-hint. { position: absolute; bottom: 60px; left: 50%; transform: translatex(-50%); background: rgba (24,24,27,0.9); color: #a1a1aa; padding: 6px 16px; border-radius: 16px; font-size: 0.78rem; font-weight: 500; pointer-events: none; opacity: 0; transition: opacity 0.25; }
+#rotation-hint.visible { opacity: 1;}
+  #rotation-hint kbd { background: #3f3f46; padding: 2px 7px; border-radius: 4px; font-family: inherit; font-size: 0.75rem; color: #fff;}
+
+  /* Inventory Shelf */
+   #shelf { flex-shrink: 0; background: #18181b; border-top: 2px solid #27272a; padding 14px 20px; display: flex; align-items: center; gap: 12px overflow-x: auto; min-height: 96px; 
+   #shelf .shelf-label { font-size: 0.7rem; font weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #52525b; writing-mode: vertical-lr:; text-orientation: mixed; transform: rotate(180deg); flex-shrink: 0; }
+   #shelf .piece-card { flex-shrink: 0; width: 72px; height: 72px; background: #1f1f26; border: 2px solid #2e2e36; border-radius: 12px; display: flex; flex-direction:cloumn; align-items: center; justify-content: center; cursor: pointer; transition:all 0.25; user-select: none; position: releative; }
+   #shelf .piece-card:hover { border-color: #52525b; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+   #shelf .piece-card.active { border-color:  #F5CD2F; box-shadow: 0 0 16px rgba(245,205,47,0.25); transform: translateY(-3px); }
+  #shelf .pice-card.placed { opacity: 0.3; pointer-events: none; border-color: #1f1f26; }
+   #shelf .piece-card .swatch { width: 28px; height: 28px; border-radius: 6px; margin-bottom: 3px; box-shadow: inset 0 2px 3px rgba(255,255,255,0.2), inset 0 -2px 3px rgba(0,0,0,0.3); }
+   #shelf .piece-card .piece-name { font-size: 0.6rem; font-weight: 600; color: #a1a1aa; text-align: center; line-height: 1.1; }
+  #shelf .pice-card .pice-count { fontsize:0.55rem; font-weight: 700; color: #71717a;}
+
+   /* Share Button */
+   #btn-share { background: linear-gradient(135deg, #0051A8, #4B9F4A); color: white; border:  none; padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
+    #btn-share:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,81,168,0.35); }
+    #btn-share:active { transform: scale(0.97); }
+    #btn-cursor { background: #27272a; color: #a1a1aa; border: 1px solid #3f3f46; padding: 7px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
+   #btn-cursor:hover { border-color: #71717a; color: #e4e4e7; }
+    #btn-cursor.acive { border-color: #f5cd2f; color: #f5cd2f; box-shadow: 0 0 10px rgba(245,205,47,0.2);}
+    
+     /* Toast */
+     #toast { position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%) translateY(20px); background: #27272a; color: #e4e4e7; padding: 10px 24px; border-radius: 24px; font-size: 0.82rem; font-weight: 500; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.5); 
+     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); } 
+
+     /* Completion Overlay */ 
+     #completion-overlay { position: fixed; inset; 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(60px); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.5s;}
+     #completion-overlay.visible { opacity: 1; pointer-events: auto; }
+     #completion-overlay .card { background: #1f1f26; border: 1px solid #3f346; border-radius: 20px; padding: 40px 48px; text-align: center; max-width: 440px; }
+    #completion-overlay.card h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #F5CD2F, #C91A09); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    #completion-overlay .card p { color:  #a1a1aa; margin-bottom:  24px; font-size: 0.9rem; } 
+    #completion-overlay.card button { background: linear-gradient (135deg, #0051A8, #4B9F4A);  color: white; border:  none; padding: 10px 28px; border-radius: 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin:  0 6px; font-family: inherit; transition: all 0.2s; } 0 6px; font-family: inherit; transition: all 0.2s; }
+     #completion-overlay .card button:hover { transform: translateY(-1px); box-shadow  0 6px 20px rgba(0,81,168,0.4); }
+     #completion-overlay .card button.ghost  { background: transparent; border: 1px solid #3f3f46; color: #a1a1aa; }
+     #completion-overlay .card button.ghost:hover  { border-color: #71717a; color: #e4e4e7; }
+     
+    /* Mobile */
+      @media (max-width: 768px) {
+        #viewort-row { flex-direction: column }
+        #main-vp-container { flex: 1; border-right: none; border-bottom: 2PX SOLID #27272A;}
+        #sidebar-vp-container { flex: none; height: 200px; min-width: unset;}}
+        #shelf { padding: 10px 12px; min-height: 80px; }
+        #shelf .pice-card { width: 56px; height: 56px; border-radius: 10px;}
+        #shelf .piece-card .swatch { width: 22px; height: 22px; }
+        #header { padding: 8px 12px;}
+        #header .logo [font-size: 1.1rem; ]
+      }
+     </style>
+     </head>
+<body>
+  <div id="app-shell">
+    <!-- Header --> 
+  <div id="header">
+     <span class="logo">🧱 BrickQuest 3D</span>
+   <div style="disply: flex; align-items: center; gap:gap: 12px;">
+    <button id="btn-cursor">🖱️ Cursor</button
+     <spam id="step-badge" class="step-badge"> steps <strong>1</strong> /4</span>
+      
+
+
 
 
