@@ -100,8 +100,53 @@
    <div style="disply: flex; align-items: center; gap:gap: 12px;">
     <button id="btn-cursor">🖱️ Cursor</button
      <spam id="step-badge" class="step-badge"> steps <strong>1</strong> /4</span>
-      
+      <select id="puzzle-select">
+        <option value="pyramid">🏛️ Mini Pyramid</option>
+        <option value="archway"🏛️ small archway</option>
+       <option value="house">🏠 Small House</option>
+ </select>
+ <button id="btn-share">🔗 share creation </button>
+ </div>
+ </div>
 
+ <!-- Viewports -->
+ <div id="viewport-row">
+  <div id="main-vp-container">
+    <span class="vp-label">🏗️ build workspace</span>
+     <div id="rotation-hint">press <kbd>r</kbd> to rotate piece</div>div>
+     </div>
+     <div id="sidebar-vp-container">
+      <SPAN class="vp-label">📐 blueprint reference</SPAN>
+      </div>
+      </div>
 
+    <!-- Inventory Shelf -->
+       <div id="shelf">
+        <span class="shelf-label">>INVENTORY</span>
+        <div id="inventry-pices" style="disply:flex;gap:12px;align-items:center;"></div>
+        </div>
+        </div>
+
+     <!-- Toast -->   
+       <div id="toast"></div>
+
+      <!-- Completion Overlay -->
+         <div id="completion-overlay">
+           <div class="card">
+             <div class="card">
+       <p> you assembled the entire model. share your masterpice with a link.</p>
+             <button id="btn-share-complete">🔗 Share Creation</button>
+            <button class="ghost" id="btn-play-again">🔄 Build Again</button>
+            </div>            
+            </div>
+
+            <script type="module"
+            impoet * as three from 'three';
+            import { orbitcontrols} from 'three/addons/controls/orbitcontrols.js';
+            import { mergeGeometries } from 'three/addons/utils/buffergeometryutils.js';
+
+          // ==================== CONSTANTS & CONFIG ====================
+           const BRICK_TYPE = { STUD_1X1: 0, BLOCK_2X2: 1, BLOCK_2X4: 2 };
+           const BRICK_NAME = ['1×1 Stud', '2×2 Block', '2×4 Block'];
 
 
