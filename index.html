@@ -147,6 +147,178 @@
 
           // ==================== CONSTANTS & CONFIG ====================
            const BRICK_TYPE = { STUD_1X1: 0, BLOCK_2X2: 1, BLOCK_2X4: 2 };
-           const BRICK_NAME = ['1×1 Stud', '2×2 Block', '2×4 Block'];
+           const BRICK_NAME = ['1x1 Stud', '2x2 Block', '2×4 Block'];
+          const BRICK_COUNT_LABEL = ['1x1', '2x2', '2×4'];
 
+          const COLORS = {  
+            RES: 0xc91a09,blue: 0x0051a8,yellow:0xf5cd2f,
+            green:0x4B9F4A, WHITE: 0xF0F0F0, DARK_GRAY: 0x6D6E70,
+            orange: 0xfe8a18,lime:0xbbe90B,teal:0x069d9f,
+          }; 
+          const color_palette = [colors.red, colors.blue, colors.yellow, color.green,colors.colors.white, colors.orange, colors.lime, colors.teal, colors.dark_gray];
+        
+        const MAT_CONFIG = { roughness: 0.15, metalness: 0.1 };
+        const GHOST_CONFIG = { opacity: 0.4, emissiveIntensity: 0.35 };
+        const GRID = { MIN_X: -5, MAX_X: 5, MIN_Z: -5, MAX_Z: 5, MAX_Y: 15, UNIT: 1, SNAP_THRESHOLD: 0.2 };
 
+  // Geometry dimensions: { w, h, d, studPositions: [[x,z], ...] } 
+  const brick_geom = {
+  [brick_type.stud_1x1]:  w: 0.88, h: 1.0, d: 0.88, studs: [[0, 0]], studradius: 0.22, studheight: 0.2 },
+   [BRICK_TYPE.BLOCK_2X2]: { w: 1.88, h: 1.0, d: 1.88, studs: [[-0.35,-0.35],[0.35,-0.35],[-0.35,0.35],[0.35,0.35]], studRadius: 0.22, studHeight: 0.2 },
+   [BRICK_TYPE.BLOCK_2X4]:  { w: 3.88, h: 1.0, d: 1.88, studs: [[-1.35,-0.35],[-0.45,-0.35],[0.45,-0.35],[1.35,-0.35],[-1.35,0.35],[-0.45,0.35],[0.45,0.35],[1.35,0.35]], studRadius: 0.22, studHeight: 0.2 },
+    };
+    
+  // ==================== PUZZLE SCHEMAS ====================  
+  function p(type,x,y,z,roty,color)  return { type, x, y, z, roty,color}; }
+  // roty: 0=0°, 1=90°, 2=180°, 3=270°
+  
+  cont puzzle = {
+    prramid: {
+      id: 'pyramid',name: 'mini pyramid',
+      steps: [
+  {
+    name: 'base lawer ( 3x3)',
+    pieces: [
+      p(2, -1, 0, -1, 0, COLORS.RED), p(2, 1, 0, -1, 0, COLORS.RED),
+      p(2,-1, 0, 1, 0, color.red), p(2,1,0,1,0, color.red),
+      p(2,0,0,-1,0, color.dark_gray), p(2, 0, 0, 1, 0, COLORS.DARK_GRAY),
+      p(2, -1, 0, 0, 0, COLORS.DARK_GRAY), p(2, 1, 0, 0, 0, COLORS.DARK_GRAY),
+      p(1,0,0,0,0,color.blue),
+]
+  },
+  {
+      name: 'second layer (2x2)',
+      pieces: [
+     p(1, -1, 1, -1, 0, COLORS.YELLOW),p(1, 1, 1, -1, 0, COLORS.YELLOW),
+     p(1, -1, 1, 1, 0, COLORS.YELLOW), p(1, 1, 1, 1, 0, COLORS.YELLOW),  
+     p(1, 0,1,0,0, colors.blue),
+     ]
+  },
+  {
+   name: 'third lawer',
+   pieces: [ 
+    p(0, 0, 2, -1, 0, COLORS.WHITE), p(0, 0, 2, 1, 0, COLORS.WHITE),
+   p(0, -1, 2, 0, 0, colors.white), p(0, 1, 2, 0, 0 , colors.white),
+   ]
+  },
+  {
+    name: 'capstone',
+    pieces: [ p(0,0,3,0,0,colors.yellow)]
+  }
+  ]
+},
+archway: {
+  id: 'archway', name: 'small archway',
+  steps:[
+    {
+      name: 'LEFT & RIGHTS PILLARS', 
+    PIECES: [
+      P(2, -2,0,0,1, COLORS.DARK_GYAY), p(2, -2, 1, 0, 1, COLORS.DARK_GRAY),
+      P(2,2,0,0,1, COLORS.DARK_GYAY), P(2,2,1,0,1,COLORS.DARK_GRAY),
+   ]
+    },
+    {
+      name: 'pillar tops',
+      pieces: [
+        p(2, -2, 2, 0, 1, colors.red), p(2, 2, 2, 0, 1, colors.red),
+       ] 
+    },
+    {
+      name: 'arch lintel',
+      pieces: [
+       p(2, -1, 3, 0, 0, COLORS.BLUE),p(2, 1, 3, 0, 0, COLORS.BLUE),
+       p(0, 0, 3, 0, 0, COLORS.YELLOW),
+       ]
+    },
+    {
+      name: 'top decoration',
+      pieces: [
+        p(0, -1, 4, 0, 0, colors.green), p(0, 1, 4, 0, 0, COLORS.GREEN),
+       p(0,0,4,0,0, colors.white),
+       ]
+    }
+    ]
+  },
+   house: {
+     id: 'house', name: 'small house',
+     steps: [ 
+      {
+        name: 'foundation',
+        pieces: [
+          p(2, -1, 0, -1, 0, colors.dark_gray), p(2, 1, 0, -1, 0, COLORS.DARK_GRAY),
+          p(2, -1, 0, 1, 0, COLORS.DARK_GRAY), p(2, 1, 0, 1, 0, COLORS.DARK_GRAY),
+          p(2, 0, 0, -1, 0, COLORS.RED),p(2, 0, 0, 1, 0, COLORS.RED),
+        ]
+      },
+      {
+        name: 'walls',
+        pieces: [
+          p(2, -1, 1, -1, 0, COLORS.WHITE), p(2, 1, 1,-1,0, colors.white),
+          p(2, -1, 1, 1, 0, COLORS.WHITE), p(2, 1, 1, 1, 0, COLORS.WHITE),
+         ]
+      },
+      {}   
+  {
+    pieces: [
+p(2, -1, 2, -1, 0, COLORS.BLUE), p(2, 1, 2, -1, 0, COLORS.BLUE), 
+ p(2, -1, 2, 1, 0, COLORS.BLUE), p(2, 1, 2, 1, 0, COLORS.BLUE),
+  ]
+  },
+  {
+    name: 'roof',
+    pieces: [
+      p(2, 0, 3, -1, 0, COLORS.RED), p(2, 0, 3, 1, 0, COLORS.RED),
+     p(1, 0, 4, 0, 0, COLORS.YELLOW),
+     ]
+  }
+  ]
+}    
+},
+
+ // ==================== AUDIO ENGINE ====================
+   class AudioEngine {
+   constructor() { 
+    this._ctx = null;
+   }
+   _ensure() { 
+    if (!this._ctx) {
+      this._ctx = new (window.audiocontext || window.webkitaudiocontext)();
+    }
+    if (this._ctx.state === 'suspended') this._ctx.resume();
+    return this._ctx;
+  }
+     playsnap(bricktype) {
+      const ctx = this._ensure();
+      const now = ctx.currenttime;
+      if (bricktype === brick_types.stud_1x1)
+       // High crisp click for small studs
+      const osc = ctx.createoscillator();
+      const gain = ctx.creategain();
+      osc.type = 'sine';
+      osc.frequency.setvalueattime(2000,now);
+      osc.frequency.exponentialramptovalueatime(1000, now + 0.03);
+      gain.gain.setvalueattime(0.25, now);
+      gain.gain.exponentialramptovalueatime(0.001, now + 0.05);
+      osc.connect(gain).connect(ctx.desrtination);
+      osc. start(now); osc.stop(now + 0.05);
+     } else if (bricktypes === brick_types.blocks_2x2) {
+       // Medium thud
+       const osc = ctx.createoscillator();
+       const gain = ctx.creategain();
+       osc.type = 'triangle';
+       osc.frequency.setvalueattime(300, now);
+       osc.frequency.exponentialramptovalueatime(100, now + 0.12);
+       gain.gain.setvalueattime(0.4, now);
+       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+       osc.connect(gain).connect(ctx.destination);
+       osc.start(now); osc.stop(now + 0.18);
+       // noise burst for plastic texture 
+       const osc2 = ctx.createoscillator();
+       const gain2 = ctx.creategain();
+      osc2.type = 'square';
+      osc2.frequency.setvalueattime(1400, now);
+      gain2.gain.setvalueattime(0.08, now);
+      gain2.gain     
+     }
+
+   
