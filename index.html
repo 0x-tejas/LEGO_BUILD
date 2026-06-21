@@ -318,7 +318,225 @@ p(2, -1, 2, -1, 0, COLORS.BLUE), p(2, 1, 2, -1, 0, COLORS.BLUE),
       osc2.type = 'square';
       osc2.frequency.setvalueattime(1400, now);
       gain2.gain.setvalueattime(0.08, now);
-      gain2.gain     
+      gain2.gain .exponentialramptovalueattime(0.001, now + 0.025);
+      osc2.connect(gain2).connect(ctx.destination);
+      osc2.start(now); osc2.stop(now + 0.025);
+     } else {
+      // deep thund for large blocks
+      const osc = ctx.createoscillator();
+      const gain = ctx.creategain();
+      osc.type = 'triangle';
+      osc.frequency.setvalueattime(200, now);
+      osc.frequency.exponentialramptovalueattime(60, now + 0.18);
+      gain.gain.setvalueattime(0.5, now);
+      gain.gain.exponentialramptovalueattime(0.001, now + 0.25);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(now); osc.stop(now + 0.25);
+      // noise burst 
+      const osc2 = ctx.createoscillator();
+      const gain2 = ctx.creategain();
+      osc2.type = 'square';
+      osc2.frequency.setvalueattime(1100, now);
+      gain2.gain.setvalueattime(0.1, now);
+      gain2.gain.exponentialramptovalueattime(0.001, now + 0.035)
+      osc2.connect(gain2).connect(ctx.destination):
+      osc2.start(now); osc2.stop(now + 0.035);
+     }
+    }
+    playerror(){
+    const ctx = this._ensure();
+    const now = ctx.currenttime;
+    const osc = ctxcreateoscillator();
+    const gain = ctx.creategain();
+    osc.type = 'sawtooth';
+    osc.frequency.setvalueattime(140, now);
+    osc.frequency.linearramptovalueattime(90, now + 0.12)
+    gain.gain.setvalueattime(0.12, now);
+    gain.gain.exponentialramptovalueattime(0.001, now + 0.18);
+    gain.connect(gain).connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.18);
+    }
+    playstepcomplete() {
+      const ctx = this._ensure();
+      const now = ctx.currenttime;
+      const freqs = [523, 659, 784, 1047]; // C5 E5 G5 C6 
+      freqs.foreach(( f, i) => {
+      const osc = ctx.createOscillator(); 
+      const gain = ctx.creategain();
+      osc.type = 'shine';
+       osc.frequency.setValueAtTime(f, now + i * 0.1);
+       gain.gain.setvalueattime(0, now + i * 0.1);
+       gain.gain.linearramptovalueattime(0.2, now + i * 0.02);
+       gain.gain.exponentialramptovalueattime(0.001, now + i * 0.1 + 0.28);
+         osc.connect(gain).connect(ctx.destination);
+        osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.28);
+      });
+    }
+    playvictory() {
+      const ctx = this._ensure();
+      cpnst now = ctx.currenttime;
+   const melody = [523, 659, 784, 1047, 784, 1047, 1319]; // C5 E5 G5 C6 G5 C6 E6
+   melody.foreach((f, i) > {
+ const osc = ctx.createOscillator();
+ const gain = ctx.creategain();
+ osc.type = 'sine';
+ osc.frequency.setvalueattime(f, now + i * 0.12);
+ gain.gain.setvalueattime(0, now + i * 0.12);
+gain.gain.linearramptovalueattime(0.25, now + i * 0.12 + 0.03);
+gain.gain.exponentialramptovalueattime(0.001, now + i * 0.12 + 0.35);
+osc.connect(gain).connect(ctx.destination);
+osc.start(now + i * 0.12); osc.stop(now + i * 0.12 + 0.35);
+   });
+  }
+}
+
+  // ==================== BRICK GEOMETRY FACTORY ====================
+ function createbrickgeometry(type) { 
+  const cfg = brick_geom(type) {
+   const halfh = cfg.h / 2;
+   const geometries = [];
+   
+   // Main body box — centered at origin, will shift to bottom-pivot later
+   const body = new three.boxgeometry(cfg.w, cfg.h, cfg.d, 2, 1, 2);
+   geometries.push(body);
+
+   // Studs on top
+   const studgeo = new three.cylindergeometry(cfg.studradius, cfg.studradius, cfg.studheight, 20);
+   studgeo.translate(0, halfh + cfg.studheight / 2, 0);
+   for (const [sx, sz] of cfg.studs) {
+    const s = studgeo.clone();
+    s.translate(sx, 0, sz);
+    geometries.push(s);
+   }
+
+   // Merge all
+   const merged = mergegeometries(geometries);
+   // shift pivot to bottom 
+   mereged.translate(0, halfh, 0);
+   merged.computevertexnormals();
+   return merged;
+  }
+
+  // ==================== SCENE SETUP ====================
+  function createrenderer(container, pixelratio = 1.5) {
+const renderer = new three.webglrenderer({ antialias: true, alpha: false });
+renderer.setpixelratio(math.min(window.devicepixelratio, pixelratio));
+renderer.shadowmap.enabled = true;
+renderer.shadowmap.type = three.pcfsoftshadowmap;
+renderer.tonemapping = three.acesfilmictonemapping;
+renderer.tonemappingexposure = 1.1;
+const rect = container.getboundingclientrect();
+renderer.setsize(rect.width, rect.height);
+container.appendchild(renderer.domelement);
+return renderer;
+  }
+
+  function createlight(scene, intensity = 1.0){
+    const key = new three.directionalight(0xffffff, 3.0 * intensity);
+    key.position.set(8, 14, 6);
+    key.castshadow = true;
+    key.shadow.mapsize.set(1024, 1024);
+    key.shadow.camera.near = 0.5;
+    key.shadow.camera.far = 60;
+    key.shadow.camera.left = -15; key.shadow.cmaera.rightn = 15;
+    key.shadow.camera.top = 15; key.shadow.camera.bottom = -15;
+    key.shadow.bias = -0.0002;
+    key.shadow.normalbias = 0.02;
+    scene.add(key);
+
+    const fill = new three directionallight(0xffeedd, 1.5 * intensity);
+    fill.postion.set(-4, 3, -3);
+    scene.add(fill)
+
+    const ambient = new three.directionllight(0x8899aa, 1.2 * intensity);
+    scene.add(ambient);
+
+      const hemi = new THREE.HemisphereLight(0xddeeff, 0x889966, 0.7 * intensity);
+   scene.add(hemi);
+   
+   const rim = new three.directionallight(0xffffff, 1.0 * intensity);
+   rim.position.st(0,5, -8);
+   scene.add(rim);
+  }
+
+  function createground(scene) {
+    const groundgeo = new three.planegeomtry(12, 12);
+    const groundmat = new three.meshstandardmaterial({ color: 0x3a3a40,roughness: 0.05});
+    const ground = three.mesh(groundgeo, groundmat);
+    ground.rotation.x = -math.pi / 2;
+    ground.postive.y = -0.01;
+    ground.receiveshadow = true;
+    ground.name = 'ground';
+    scene.add(grid);
+
+    const grid = new three.gridhelper(10, 10, 0x555555,0x333333);
+    grid.position.y = 0.005;
+    grid.name = "grid";
+scene.add(grid);
+
+// build plate border 
+const bordergeo = new  three .boxgeometry(10.3, 0.5, 10.3);
+const bordermat = new three.meshstandardmaterial({color: 0x2a2a30< roughness: 0.3, metalness: 0.2});
+const border = new three.mesh(bordergeo,bordermat);
+border.position.y = -0.08;
+border.receiveshadow = true;
+border.name = 'border';
+scene.add(border);
+  }
+
+  // ==================== BRICK MANAGER (InstancedMesh) ====================
+  class brickmanager {
+    constructor (scene){
+      this.scene = scene;
+     this.brickmaterial = new three.meshstandardmaterial({
+      ...mat_config,
+      color: 0xffffff,
+     });
+     
+     this.grometries = {};
+     this.meshes = {};
+     this.counts = {};
+     this.occupancy = new map(); // "x,y,z"-> true
+     
+
+      
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+        
+
+    
+    
+
+      
+      
+
+
+
+
+
+
+
+
+
+
      }
 
    
