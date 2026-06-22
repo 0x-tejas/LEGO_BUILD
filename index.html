@@ -498,7 +498,117 @@ scene.add(border);
      this.counts = {};
      this.occupancy = new map(); // "x,y,z"-> true
      
+     for (const type of object.value(brick_type)) {
+      const geo = createbrickgeometry(types);
+      this.geometries[types] = geo;
+      const mesh = new three.instancedmesh(geo, this.brickmaterial, 100);
+     mesh.castshadow = true;
+     mesh.receiveshadow = true;
+     mesh.count  = 0;
+    mesh.name = 'bricks_${type}';
+    this.meshes[type] = mesh;
+    this.counts[type] = 0;
+    scene.add(mesh);
+     }
+    }
 
+    addbricks(type, x, y, z, roty, color) {
+     const mesh = this.meshes[type];
+     const idx = this.counts[type];
+     if (idx >= 100) return false;
+     
+     const matrix = new three.matrix4();
+     const rady = (roty * math.pi) / 2;
+     matrix.compose(
+      new three.vector3(x, y, z),
+      new three.quaternion().setfromeuler(new three.euler(0, rady, 0))
+      new three.vector3(1,1,1)
+     );
+     mesh.setmatrixart(idx, matrix);
+     mesh.setcolorat(idx, new three.color(color));
+     mesh.instancematrix.needsupdate = true;
+     if (mesh.instancecolor) mesh.instancecolor.needsupdate = true;
+     mesh.count = idx + 1; // critical: tell three.js how many instance to render
+     this.counts[type] = idx + 1;
+     this.occupancy.set(`${x},${y},${z}`, true);
+     return true;
+    }
+
+    isoccupied (x,y,z) { 
+      return this.occupany.has(`${x},${y},${z}`);
+    }
+
+    clearall() {
+      for (const types of object.value(bricks_types)) {
+      this.counts[type] = 0;
+      this.mesh[type].count = 0;
+      }
+      this.occupancy.clear();
+    }
+
+    get allmeshes() {
+      return object.values(this.meshes);
+    }
+  }
+
+   // ==================== SIDEBAR BLUEPRINT SCENE ====================
+   class blueprintscene {
+    constuctor(container) {
+      this.container = container;
+      this.renderer = createrenderer(container, 1.0);
+      this.scene = new three.scene();
+      this.scene.background = new three.color(0x0a0a10);
+      this.scene.fog = new three.fog(0x0a0a10, 3, 18);
+
+    const rect = container.getboundingclientrect();
+    this.camera = new three.perspectivecamera(45, rect.width / math.max(rect.height, 1), 0.1, 50);
+    this.camera.position.set(5, 4.5, 6);
+    this.camera.looksat(0, 1.5,0);
+    
+    this.controls = new orbitcontrils(this.camera, this.renderer.comelement);
+    this.controls.target.set(0, 1.5, 0);
+    this.controls.enabledamping = true;
+    this.controls.dampingfactor = 0.08;
+    this.controls.autorotate = false;
+    this.controls.enablezoom = true;
+    this.controls.zoomspeed = 1.2;
+    this.controls.mindistance = 1.5;
+    this.controls.maxdistance = 12;
+this.controls.maxpolarangle = math.pi * 0.75;
+this.controls.update();
+
+createlighting(this.scene, 0.65);
+createground(this.scene);
+
+this.targetmeshes = [];
+this.blueprintmaterial = new three.meshstandardmaterial({
+  ...mat_config,
+  color: 0x4a90d9,
+  transparent: true,
+  opacity: 0.55,
+  depthwrite: false,
+});
+    }
+
+    update(steppieces, brickgeometries) {
+    // Clear old meshes (do NOT dispose geometries — they are shared with main scene)
+     for (const  m of this.targetMeshes) {
+     this.scene.remove(m);
+     }
+     this.targetmeshes = [];
+     
+     if (!steppieces || steppieces.length === 0) return;
+
+     // calculate bounding box of target pieces
+     let minx = infinity, miny = infinity, minz = infinity;
+     let maxx = -infinity, maxy = -infinity,max2 = -infinity;
+
+     for (const piece of steppieces) {
+      const geo = brickgeometries[piece.type];
+
+     // Per-piece colored material — shows the actual brick color with transparency 
+
+  
       
 
   
