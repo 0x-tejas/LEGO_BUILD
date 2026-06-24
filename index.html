@@ -869,6 +869,45 @@ _createGhost() {
   if ( this.ghostmesh) this._removeghost();
 
   const geo = this. brickmanager.geometries[this.activebricktype];
+  this..ghostmesh = new three.mesh(geo, this.ghostmaterial);
+  this.ghostmesh.renderorder = 1;
+  this.ghostmesh.material.depthtest = true;
+  this.ghostmesh.material.depthwrite = false;
+  this.mainscene.add(this.ghostmesh);
+
+  // edge wireframe for clarity 
+  const edgegeo = new three.edgesgeometry(geo, 15);
+  this.ghostedge = new three.line4segments(edgegeo,this.ghostedgematerial);
+  this.ghostedge.renderorder = 2;
+  this.ghostedge.material.depthtest = true;
+  this.ghostedge.material.depthwrite = false;
+  this.ghostmesh.add(this.ghostedge);
+
+  this._updateghosttransform();
+}
+
+_removeghost() {
+if (this.ghostmesh) {
+  this.mainscene.remove(this.ghostmesh);
+  if (this.ghostmesh.geometry) {
+    // don't dispose - shared with instancedmesh
+  }
+  this.ghostmesh = null;
+  this.ghostedge = null;
+}
+}
+
+_updateghosttransform(){
+  if (! this.ghostmesh) return;
+  cont pos = this._raycastergrid ();
+  if (!pos) return;
+  this.ghostmesh.position.set(pos.x, pos.y, pos.z);
+  this.ghostmesh.roatation.set(0, (this.activebrickrotation * math.pi) / 2, 0);
+
+  // color feedback: check proximity to any valid target 
+  const step = this._currentpuzzle().step[this.curremtstepindex];
+  
+
   
 
 
