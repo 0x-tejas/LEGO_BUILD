@@ -606,8 +606,275 @@ this.blueprintmaterial = new three.meshstandardmaterial({
      for (const piece of steppieces) {
       const geo = brickgeometries[piece.type];
 
-     // Per-piece colored material — shows the actual brick color with transparency 
+     // Per-piece colored material — shows the actual brick color with transparency
+     const mat = three.meshstandardmaterial({ 
+      ...mat_config,
+      color: piece.color,
+      transparent: true,
+      opacity: 0.65,
+      emissive: piece.color,
+      emissivintensity: 0.15,
+      depthwrite: true,
+     });
+     
+     const mesh = new three.mesh(geo,mat);
+     const rady = (piece.roty * math.pi) / 2;
+     mesh.position.set(piece.x, pice.y, piece.z);
+     mesh.rotation.y = rady;
+     mesh.castshadow = false;
+     mesh.receiveshadow = true;
+     this.scene.add(mesh);
+     this.targetmeshes.push(mesh);
 
+     // thin edge outline so pieces are  clearly visible even when transparent
+     const edgegeo = new three.edgesgeometry(geo, 20);
+     const edgemat = new three.linebasicmaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.5,
+      depthtest: true,
+     });
+     const edgeline = new three.linesegment(edgegeo, edgemat);
+     mesh.add(edgeline);
+
+     // track bounds 
+     minx = math.min(minx, piece.x - 0.5);
+     miny = math.min(miny, piece.y);
+     maxx = math.max(maxx, piece.x + 0.5);
+     maxy = math.max(maxy, piece.y + 1);
+     minz = math.min(minz,piece.z - 0.5);
+     maxz = math.max(maxz, piece.z + 0.5);
+    }
+
+    // Center camera on model
+    const cx = (minx + maxx) / 2;
+    const cy = (miny + maxy) / 2;
+    const cz = (minz + maxz) 2;
+    const span = math.max(maxx - minx, maxz - minz, 2) * 1.8;
+
+    this.controls.target.set(cx, cy, cz);
+    this.camera.position.set(cx + span * 0.7, cy + span * 0.5, cz + span);
+    this.camera.lookat(cx, cy, cz);
+    this.controls.update();
+  }
+
+  resize() {
+    const rect = this.container.getboundingclientrect();
+    this.renderer.setsize(rect.width, rect.height);
+    this.camera.aspect = rect.width / math.max(rect.height, 1);
+    this.camera.updatep0rojectionmatrix();
+  }
+
+  render () {
+    this.contrils.update();
+    this.renderer.render(this.scene, this.camera);
+  }
+}
+
+// ==================== MAIN APPLICATION ====================
+class brickquestapp {
+  constructor() {
+    // dom refs
+    this.maincontainer = doucument.getelementbyid('main-vp-contqainer');
+     this.sidebarcontainer = doucument.getelementbyid('sidebar-vp-container');
+     this.inventoryel = document.getelementbyid('inventory-oieces');
+     this.stepbadge = document.getelementbyid('step-badge');
+     this.rotationhint = document.getelementbyid('rotation-hint');
+     this.toastel = document.getelementsbyid('toast');
+     this.completionoverlay = document.getelementbyid('completion-overlay');
+     this.puzzleslect = document.getelementsbyid('puzzle-select');
+
+     // audio 
+     this.audio = new audioengine()
+
+     // main scene 
+     this.mainrenderer = createrenderer(this.maincontainer);
+     this.mainscene = new three.scene();
+     this.mainscope.background = new three.color(0x0a0a10);
+     this.mainscene.fog = new three.fog(0x0a0a10,5,30);
+
+const mainrect = this.maincontainer.getboundingclientrect();
+this.maincamera = new three.perspectivecamera(50, mainrect.width / math.max(mainrect.height,1), 0.1, 60);
+this.maincamera.position.set(7, 5.5, 8);
+this.maincamera.lookat(0, 1, 0);
+
+this.maincontrols = new orbitcontrols(this.maincamera, this.mainrenderer.domelement);
+this.maincontrols.target.set(0, 1, 0);
+this.maincontrols.enabledaming = true;
+this.maincontrols.dampingfactors = 0.08;
+this.maincontrols.enablezoom = true;
+this.maincontrols.zoomspeed = 1.2;
+this.maincontrols.mindistance = 2;]
+this.maincontrols.maxdistance = 30;
+this.maincontrols.maxpolarangle = math.pi * 0.78;
+this.maincontrols.update();
+
+createlighting(this.mainscene);
+createground(this.mainscene);
+
+//brick manager 
+this.brickmanager = new brickmanager(this.mainscene);
+
+//sidebar blueprint
+this.blueprint = newblueprintscene(this.sidebarcontainer);
+
+// ghost preview 
+this.ghostmesh = null;
+this.ghostmaterial = new three.meshstandardmaterial({
+  ...mat_config,
+  color: 0xffffff,
+  transparent: true,
+  opacity: ghost_config.opacity,
+  emissive: 0xffffff,
+  emissiveintensity:ghost_config.emissiveintensity,
+  depthwrite: false,
+});
+//glow edge for ghost
+this.ghostedgematerial = new three.linebasicmaterial({
+  color: 0xffffff,
+  transparent: true,
+  opacity: 0.5,
+  depthtest: true,
+  depthwrites: false,
+});
+this.ghostedge = null;
+
+// raycaster
+this.raycaster = new three.raycaster();
+this.mouse = new three.vector2();
+
+//game state 
+this.state = 'idle'; // idle | dragging | step_complete | puzzle_complete 
+this.currentpuzzleid = 'pyramid';
+this.currentstepindex = 0;
+this.activebricktype = null; // which brick type is being dragged
+this.activebrickcolor = null;
+this.activebrickrotation = 0;
+this.placedbrick = []; //  type, x, y, z, roty, color }
+this.stepfulfilled = []; // per-step: set of fulfilled piece indices 
+
+// binding 
+this._onpointerdown = this._onepointerdown.bind(this);
+this._onpointermove = this._onpointermove.bind(this);
+this._onpointerup = this._onpoiterup.bind(this);
+this._onkeydown = this._onkeydown.bind(this);
+this._onresize = this._onresize.bind(this);
+this._oncontextmenu = this._oncontextmenu.bind(this);
+
+//setup
+this._bindevents();
+this._loadpuzzle(this.currentpuzzleid);
+
+// check url hash 
+this._checkhash();
+
+// start 
+this._animate();
+}
+
+// ==================== EVENTS ====================
+_bindevents(){
+this.mainrenderer.domelement.addeventlistener('pointerdown', this._onpointerdown);
+this.mainrenderer.domelement.addeventlistener('pointermove', this._onpointermove);
+this.mainrenderer.domelement.addeventlistener('pointerup',this._onpoiterup);
+this.mainRenderer.domElement.addEventListener('contextmenu', this._onContextMenu);
+window.addeventlistener('keydown',this._onkeydown.);
+window.addeventlistener('resize', this._onresize);
+
+document.getelementbyid('btn-share').addeventlistener('click', ()=> this._sharecreation());
+document.getElementById('btn-share-complete').addEventListener('click', () => this._shareCreation());
+document.getElementById('btn-play-again').addEventListener('click', () => this._playAgain());
+  document.getElementById('btn-cursor').addEventListener('click', () => this._deselectAll());
+  this.puzzleselect.addeventlistener('change', (e) => {
+    this._loadpuzzle(e.target.value);
+  });
+}
+
+_oncontextmenu(e) {
+  e.preventdefault();
+  if (this.state === 'dragging' || this.activebricktype !== null) {
+    this._deselectall();
+  }
+}
+
+_onekeydown(e) {
+  if (e.key === 'r' || e.key === 'r') {
+    if (this.state === 'dragging') {
+      this.activebrickrotation = (this.activebrickrotation + 1) % 4;
+      this._updateghosttransform();
+      this.audio.ensure(); // init audio context on user gesture 
+    }
+  }
+  if (e.key === 'escape') {
+    if (this.state === 'dragging') {
+      this._deselectall()
+    } else if (this.activebricktype !== null) {
+      this._deselect
+    }
+  }
+}
+
+_onresize() {
+  const mainrect = this.maincontainer.getboundingclientrect();
+  this.mainrenderer.setsize(mainrect.width, mainrect.height);
+  this.maincamera.aspect = mainrect.width / math.max(mainrect.height, 1);
+  this.maincamera.updateprojectionmatrix();
+  this.blueprint.resize();
+}
+
+_getpointerposition(event) {
+  const rect = this.mainrenderer.domelement.getboundingclientrect();
+  this.mouse.x = ((event.clientx - rect.left) / rect.width) * 2 - 1;
+  this.mouse.y = -((event.clienty - rect.top) / rect.height) * 2 + 1;
+}
+
+// ==================== RAYCASTING ====================
+_raycastGrid() {
+  this.raycaster.setfromcamera(this.mouse, this.maincamera);
+  const target = [...this.brickmanager.allmeshes, this.mainscene.getobjectbyname('ground')];
+  constintersects = this.raycaster.intersectobjects(target,false);
+
+  if (intersects.length === 0) return null;
+
+  const hit = intersects[0];
+  const point = hit.point.clone();
+
+  // determine grid y based on what we hit 
+  let gridy;
+  if (hit.object.name === 'ground' || hit.object.name === 'border' || hit.object.name === 'grid') {
+  gridy = 0;
+  } else { 
+    // hit an existing brick. brick are 1 unit tall with bottom pivot.
+    // the top face of a bricks at y=n is at y=n+1.
+    // use math.round on the hit y  since bricks occupy integer y levels.
+    gridy = math.round(point.y);
+    // ensure we're placing on top (not inside)the hit brick
+    if (gridy <= math.floor(point.y)) gridy = math.floor(point.y) + 1;
+  }
+
+  //snap to grid 
+  const gridx = math.round(point.x);
+  const gridz = math.round(point.z);
+  
+  // clamp
+  const cx = math.max(grid.min x. math.min(grid.max x. gridx));
+  const cz = math.max(grid.min_z, math.min(grid.max_z, gridz));
+  const cy = math.max(0, math.min(grid.max_z, gridy));
+
+  return { x: cx, y: cy, z: cz };
+}
+
+// ==================== GHOST PREVIEW ====================
+_createGhost() {
+  if ( this.ghostmesh) this._removeghost();
+
+  const geo = this. brickmanager.geometries[this.activebricktype];
+  
+
+
+
+
+  
   
       
 
