@@ -13,946 +13,1375 @@
       "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
     }
   }
-   </script>
-   
-   <style>
+  </script>
+  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-     html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', system-ui, sans-serif; background: #2c2c80; color: #e4e4e7; } 
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', system-ui, sans-serif; background: #0f0f12; color: #e4e4e7; }
+
     #app-shell { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+
     /* Header */
-    #header { disply: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: #18181b; border-bottom: 1px solid #27272a; z-index: 10; gap: 16px; flex-shrink: 0; }
-     #header .logo { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, #F5CD2F, #C91A09); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    #header .step-badge { background: #27272a; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #a1a1aa; }
+    #header { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: #18181b; border-bottom: 1px solid #27272a; z-index: 10; gap: 16px; flex-shrink: 0; }
+    #header .logo { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, #F5CD2F, #C91A09); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     #header .step-badge { background: #27272a; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #a1a1aa; }
     #header .step-badge strong { color: #F5CD2F; }
-    #puzzle-select { background: #27272a; color: #e4e4e7 border: 1px sold #3f3f46; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-family: inherit; cursor: pointer; }
+    #puzzle-select { background: #27272a; color: #e4e4e7; border: 1px solid #3f3f46; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-family: inherit; cursor: pointer; }
 
-     /* Viewport Row */
-      #viewport-row{ display: flex; flex: 1; min-height: 0; position: relative; }
+    /* Viewport Row */
+    #viewport-row { display: flex; flex: 1; min-height: 0; position: relative; }
 
- /* Main Viewport */
- #main-vp-container { flex: 7; position: relative; min-width: 0; border-right: 2px solid #27272a; background: radial-gradient(ellipse at center, #1a1a24 0%, #0a0a10 100%); }
-#main-vp-container canvas { display: block; }
- #main-vp-container .vp-label { position: absolute; top: 12px; left: 16px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #71717a; pointer-events: none; }
+    /* Main Viewport */
+    #main-vp-container { flex: 7; position: relative; min-width: 0; border-right: 2px solid #27272a; background: radial-gradient(ellipse at center, #1a1a24 0%, #0a0a10 100%); }
+    #main-vp-container canvas { display: block; }
+    #main-vp-container .vp-label { position: absolute; top: 12px; left: 16px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #71717a; pointer-events: none; }
 
-/* Sidebar Viewport */
- #sidebar-vp-container { flex: 3; position: relative; min-width: 280px; background: radial-gradient(ellipse at center, #14141e 0%, #0a0a10 100%); }
- #sidebar-vp-container canvas { display: bloks; }
- #sidebar-vp-container .vp-label { position: absolute; t op: 12px; left: 16px; font-size: 0.75rem; font-weight: 600; text-trnsform: uppercase; letter-spacing:0.08em; color: #71717a; pointer-events: none; }
+    /* Sidebar Viewport */
+    #sidebar-vp-container { flex: 3; position: relative; min-width: 280px; background: radial-gradient(ellipse at center, #14141e 0%, #0a0a10 100%); }
+    #sidebar-vp-container canvas { display: block; }
+    #sidebar-vp-container .vp-label { position: absolute; top: 12px; left: 16px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #71717a; pointer-events: none; }
 
- /* rotation hint overlay */ 
- #rotation-hint. { position: absolute; bottom: 60px; left: 50%; transform: translatex(-50%); background: rgba (24,24,27,0.9); color: #a1a1aa; padding: 6px 16px; border-radius: 16px; font-size: 0.78rem; font-weight: 500; pointer-events: none; opacity: 0; transition: opacity 0.25; }
-#rotation-hint.visible { opacity: 1;}
-  #rotation-hint kbd { background: #3f3f46; padding: 2px 7px; border-radius: 4px; font-family: inherit; font-size: 0.75rem; color: #fff;}
+    /* Rotation hint overlay */
+    #rotation-hint { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); background: rgba(24,24,27,0.9); color: #a1a1aa; padding: 6px 16px; border-radius: 16px; font-size: 0.78rem; font-weight: 500; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+    #rotation-hint.visible { opacity: 1; }
+    #rotation-hint kbd { background: #3f3f46; padding: 2px 7px; border-radius: 4px; font-family: inherit; font-size: 0.75rem; color: #fff; }
 
-  /* Inventory Shelf */
-   #shelf { flex-shrink: 0; background: #18181b; border-top: 2px solid #27272a; padding 14px 20px; display: flex; align-items: center; gap: 12px overflow-x: auto; min-height: 96px; 
-   #shelf .shelf-label { font-size: 0.7rem; font weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #52525b; writing-mode: vertical-lr:; text-orientation: mixed; transform: rotate(180deg); flex-shrink: 0; }
-   #shelf .piece-card { flex-shrink: 0; width: 72px; height: 72px; background: #1f1f26; border: 2px solid #2e2e36; border-radius: 12px; display: flex; flex-direction:cloumn; align-items: center; justify-content: center; cursor: pointer; transition:all 0.25; user-select: none; position: releative; }
-   #shelf .piece-card:hover { border-color: #52525b; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-   #shelf .piece-card.active { border-color:  #F5CD2F; box-shadow: 0 0 16px rgba(245,205,47,0.25); transform: translateY(-3px); }
-  #shelf .pice-card.placed { opacity: 0.3; pointer-events: none; border-color: #1f1f26; }
-   #shelf .piece-card .swatch { width: 28px; height: 28px; border-radius: 6px; margin-bottom: 3px; box-shadow: inset 0 2px 3px rgba(255,255,255,0.2), inset 0 -2px 3px rgba(0,0,0,0.3); }
-   #shelf .piece-card .piece-name { font-size: 0.6rem; font-weight: 600; color: #a1a1aa; text-align: center; line-height: 1.1; }
-  #shelf .pice-card .pice-count { fontsize:0.55rem; font-weight: 700; color: #71717a;}
+    /* Inventory Shelf */
+    #shelf { flex-shrink: 0; background: #18181b; border-top: 2px solid #27272a; padding: 14px 20px; display: flex; align-items: center; gap: 12px; overflow-x: auto; min-height: 96px; }
+    #shelf .shelf-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #52525b; writing-mode: vertical-lr; text-orientation: mixed; transform: rotate(180deg); flex-shrink: 0; }
+    #shelf .piece-card { flex-shrink: 0; width: 72px; height: 72px; background: #1f1f26; border: 2px solid #2e2e36; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; user-select: none; position: relative; }
+    #shelf .piece-card:hover { border-color: #52525b; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    #shelf .piece-card.active { border-color: #F5CD2F; box-shadow: 0 0 16px rgba(245,205,47,0.25); transform: translateY(-3px); }
+    #shelf .piece-card.placed { opacity: 0.3; pointer-events: none; border-color: #1f1f26; }
+    #shelf .piece-card .swatch { width: 28px; height: 28px; border-radius: 6px; margin-bottom: 3px; box-shadow: inset 0 2px 3px rgba(255,255,255,0.2), inset 0 -2px 3px rgba(0,0,0,0.3); }
+    #shelf .piece-card .piece-name { font-size: 0.6rem; font-weight: 600; color: #a1a1aa; text-align: center; line-height: 1.1; }
+    #shelf .piece-card .piece-count { font-size: 0.55rem; font-weight: 700; color: #71717a; }
 
-   /* Share Button */
-   #btn-share { background: linear-gradient(135deg, #0051A8, #4B9F4A); color: white; border:  none; padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
+    /* Share Button */
+    #btn-share { background: linear-gradient(135deg, #0051A8, #4B9F4A); color: white; border: none; padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
     #btn-share:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,81,168,0.35); }
     #btn-share:active { transform: scale(0.97); }
     #btn-cursor { background: #27272a; color: #a1a1aa; border: 1px solid #3f3f46; padding: 7px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
-   #btn-cursor:hover { border-color: #71717a; color: #e4e4e7; }
-    #btn-cursor.acive { border-color: #f5cd2f; color: #f5cd2f; box-shadow: 0 0 10px rgba(245,205,47,0.2);}
-    
-     /* Toast */
-     #toast { position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%) translateY(20px); background: #27272a; color: #e4e4e7; padding: 10px 24px; border-radius: 24px; font-size: 0.82rem; font-weight: 500; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.5); 
-     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); } 
+    #btn-cursor:hover { border-color: #71717a; color: #e4e4e7; }
+    #btn-cursor.active { border-color: #F5CD2F; color: #F5CD2F; box-shadow: 0 0 10px rgba(245,205,47,0.2); }
 
-     /* Completion Overlay */ 
-     #completion-overlay { position: fixed; inset; 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(60px); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.5s;}
-     #completion-overlay.visible { opacity: 1; pointer-events: auto; }
-     #completion-overlay .card { background: #1f1f26; border: 1px solid #3f346; border-radius: 20px; padding: 40px 48px; text-align: center; max-width: 440px; }
-    #completion-overlay.card h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #F5CD2F, #C91A09); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    #completion-overlay .card p { color:  #a1a1aa; margin-bottom:  24px; font-size: 0.9rem; } 
-    #completion-overlay.card button { background: linear-gradient (135deg, #0051A8, #4B9F4A);  color: white; border:  none; padding: 10px 28px; border-radius: 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin:  0 6px; font-family: inherit; transition: all 0.2s; } 0 6px; font-family: inherit; transition: all 0.2s; }
-     #completion-overlay .card button:hover { transform: translateY(-1px); box-shadow  0 6px 20px rgba(0,81,168,0.4); }
-     #completion-overlay .card button.ghost  { background: transparent; border: 1px solid #3f3f46; color: #a1a1aa; }
-     #completion-overlay .card button.ghost:hover  { border-color: #71717a; color: #e4e4e7; }
-     
+    /* Toast */
+    #toast { position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%) translateY(20px); background: #27272a; color: #e4e4e7; padding: 10px 24px; border-radius: 24px; font-size: 0.82rem; font-weight: 500; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Completion Overlay */
+    #completion-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+    #completion-overlay.visible { opacity: 1; pointer-events: auto; }
+    #completion-overlay .card { background: #1f1f26; border: 1px solid #3f3f46; border-radius: 20px; padding: 40px 48px; text-align: center; max-width: 440px; }
+    #completion-overlay .card h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #F5CD2F, #C91A09); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    #completion-overlay .card p { color: #a1a1aa; margin-bottom: 24px; font-size: 0.9rem; }
+    #completion-overlay .card button { background: linear-gradient(135deg, #0051A8, #4B9F4A); color: white; border: none; padding: 10px 28px; border-radius: 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin: 0 6px; font-family: inherit; transition: all 0.2s; }
+    #completion-overlay .card button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,81,168,0.4); }
+    #completion-overlay .card button.ghost { background: transparent; border: 1px solid #3f3f46; color: #a1a1aa; }
+    #completion-overlay .card button.ghost:hover { border-color: #71717a; color: #e4e4e7; }
+
     /* Mobile */
-      @media (max-width: 768px) {
-        #viewort-row { flex-direction: column }
-        #main-vp-container { flex: 1; border-right: none; border-bottom: 2PX SOLID #27272A;}
-        #sidebar-vp-container { flex: none; height: 200px; min-width: unset;}}
-        #shelf { padding: 10px 12px; min-height: 80px; }
-        #shelf .pice-card { width: 56px; height: 56px; border-radius: 10px;}
-        #shelf .piece-card .swatch { width: 22px; height: 22px; }
-        #header { padding: 8px 12px;}
-        #header .logo [font-size: 1.1rem; ]
-      }
-     </style>
-     </head>
+    @media (max-width: 768px) {
+      #viewport-row { flex-direction: column; }
+      #main-vp-container { flex: 1; border-right: none; border-bottom: 2px solid #27272a; }
+      #sidebar-vp-container { flex: none; height: 200px; min-width: unset; }
+      #shelf { padding: 10px 12px; gap: 8px; min-height: 80px; }
+      #shelf .piece-card { width: 56px; height: 56px; border-radius: 10px; }
+      #shelf .piece-card .swatch { width: 22px; height: 22px; }
+      #header { padding: 8px 12px; }
+      #header .logo { font-size: 1.1rem; }
+    }
+  </style>
+</head>
 <body>
   <div id="app-shell">
-    <!-- Header --> 
-  <div id="header">
-     <span class="logo">🧱 BrickQuest 3D</span>
-   <div style="disply: flex; align-items: center; gap:gap: 12px;">
-    <button id="btn-cursor">🖱️ Cursor</button
-     <spam id="step-badge" class="step-badge"> steps <strong>1</strong> /4</span>
-      <select id="puzzle-select">
-        <option value="pyramid">🏛️ Mini Pyramid</option>
-        <option value="archway"🏛️ small archway</option>
-       <option value="house">🏠 Small House</option>
- </select>
- <button id="btn-share">🔗 share creation </button>
- </div>
- </div>
+    <!-- Header -->
+    <div id="header">
+      <span class="logo">🧱 BrickQuest 3D</span>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button id="btn-cursor">🖱️ Cursor</button>
+        <span id="step-badge" class="step-badge">Step <strong>1</strong> / 4</span>
+        <select id="puzzle-select">
+          <option value="pyramid">🏛️ Mini Pyramid</option>
+          <option value="archway">🏛️ Small Archway</option>
+          <option value="house">🏠 Small House</option>
+        </select>
+        <button id="btn-share">🔗 Share Creation</button>
+      </div>
+    </div>
 
- <!-- Viewports -->
- <div id="viewport-row">
-  <div id="main-vp-container">
-    <span class="vp-label">🏗️ build workspace</span>
-     <div id="rotation-hint">press <kbd>r</kbd> to rotate piece</div>div>
-     </div>
-     <div id="sidebar-vp-container">
-      <SPAN class="vp-label">📐 blueprint reference</SPAN>
+    <!-- Viewports -->
+    <div id="viewport-row">
+      <div id="main-vp-container">
+        <span class="vp-label">🏗️ Build Workspace</span>
+        <div id="rotation-hint">Press <kbd>R</kbd> to rotate piece</div>
       </div>
+      <div id="sidebar-vp-container">
+        <span class="vp-label">📐 Blueprint Reference</span>
       </div>
+    </div>
 
     <!-- Inventory Shelf -->
-       <div id="shelf">
-        <span class="shelf-label">>INVENTORY</span>
-        <div id="inventry-pices" style="disply:flex;gap:12px;align-items:center;"></div>
-        </div>
-        </div>
+    <div id="shelf">
+      <span class="shelf-label">INVENTORY</span>
+      <div id="inventory-pieces" style="display:flex;gap:12px;align-items:center;"></div>
+    </div>
+  </div>
 
-     <!-- Toast -->   
-       <div id="toast"></div>
+  <!-- Toast -->
+  <div id="toast"></div>
 
-      <!-- Completion Overlay -->
-         <div id="completion-overlay">
-           <div class="card">
-             <div class="card">
-       <p> you assembled the entire model. share your masterpice with a link.</p>
-             <button id="btn-share-complete">🔗 Share Creation</button>
-            <button class="ghost" id="btn-play-again">🔄 Build Again</button>
-            </div>            
-            </div>
+  <!-- Completion Overlay -->
+  <div id="completion-overlay">
+    <div class="card">
+      <h2>🎉 Creation Complete!</h2>
+      <p>You assembled the entire model. Share your masterpiece with a link.</p>
+      <button id="btn-share-complete">🔗 Share Creation</button>
+      <button class="ghost" id="btn-play-again">🔄 Build Again</button>
+    </div>
+  </div>
 
-            <script type="module"
-            impoet * as three from 'three';
-            import { orbitcontrols} from 'three/addons/controls/orbitcontrols.js';
-            import { mergeGeometries } from 'three/addons/utils/buffergeometryutils.js';
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
-          // ==================== CONSTANTS & CONFIG ====================
-           const BRICK_TYPE = { STUD_1X1: 0, BLOCK_2X2: 1, BLOCK_2X4: 2 };
-           const BRICK_NAME = ['1x1 Stud', '2x2 Block', '2×4 Block'];
-          const BRICK_COUNT_LABEL = ['1x1', '2x2', '2×4'];
+    //  CONSTANTS & CONFIG 
+    const BRICK_TYPE = { STUD_1X1: 0, BLOCK_2X2: 1, BLOCK_2X4: 2 };
+    const BRICK_NAME = ['1×1 Stud', '2×2 Block', '2×4 Block'];
+    const BRICK_COUNT_LABEL = ['1×1', '2×2', '2×4'];
 
-          const COLORS = {  
-            RES: 0xc91a09,blue: 0x0051a8,yellow:0xf5cd2f,
-            green:0x4B9F4A, WHITE: 0xF0F0F0, DARK_GRAY: 0x6D6E70,
-            orange: 0xfe8a18,lime:0xbbe90B,teal:0x069d9f,
-          }; 
-          const color_palette = [colors.red, colors.blue, colors.yellow, color.green,colors.colors.white, colors.orange, colors.lime, colors.teal, colors.dark_gray];
-        
-        const MAT_CONFIG = { roughness: 0.15, metalness: 0.1 };
-        const GHOST_CONFIG = { opacity: 0.4, emissiveIntensity: 0.35 };
-        const GRID = { MIN_X: -5, MAX_X: 5, MIN_Z: -5, MAX_Z: 5, MAX_Y: 15, UNIT: 1, SNAP_THRESHOLD: 0.2 };
-
-  // Geometry dimensions: { w, h, d, studPositions: [[x,z], ...] } 
-  const brick_geom = {
-  [brick_type.stud_1x1]:  w: 0.88, h: 1.0, d: 0.88, studs: [[0, 0]], studradius: 0.22, studheight: 0.2 },
-   [BRICK_TYPE.BLOCK_2X2]: { w: 1.88, h: 1.0, d: 1.88, studs: [[-0.35,-0.35],[0.35,-0.35],[-0.35,0.35],[0.35,0.35]], studRadius: 0.22, studHeight: 0.2 },
-   [BRICK_TYPE.BLOCK_2X4]:  { w: 3.88, h: 1.0, d: 1.88, studs: [[-1.35,-0.35],[-0.45,-0.35],[0.45,-0.35],[1.35,-0.35],[-1.35,0.35],[-0.45,0.35],[0.45,0.35],[1.35,0.35]], studRadius: 0.22, studHeight: 0.2 },
+    const COLORS = {
+      RED: 0xC91A09, BLUE: 0x0051A8, YELLOW: 0xF5CD2F,
+      GREEN: 0x4B9F4A, WHITE: 0xF0F0F0, DARK_GRAY: 0x6D6E70,
+      ORANGE: 0xFE8A18, LIME: 0xBBE90B, TEAL: 0x069D9F,
     };
-    
-  // ==================== PUZZLE SCHEMAS ====================  
-  function p(type,x,y,z,roty,color)  return { type, x, y, z, roty,color}; }
-  // roty: 0=0°, 1=90°, 2=180°, 3=270°
-  
-  cont puzzle = {
-    prramid: {
-      id: 'pyramid',name: 'mini pyramid',
-      steps: [
-  {
-    name: 'base lawer ( 3x3)',
-    pieces: [
-      p(2, -1, 0, -1, 0, COLORS.RED), p(2, 1, 0, -1, 0, COLORS.RED),
-      p(2,-1, 0, 1, 0, color.red), p(2,1,0,1,0, color.red),
-      p(2,0,0,-1,0, color.dark_gray), p(2, 0, 0, 1, 0, COLORS.DARK_GRAY),
-      p(2, -1, 0, 0, 0, COLORS.DARK_GRAY), p(2, 1, 0, 0, 0, COLORS.DARK_GRAY),
-      p(1,0,0,0,0,color.blue),
-]
-  },
-  {
-      name: 'second layer (2x2)',
-      pieces: [
-     p(1, -1, 1, -1, 0, COLORS.YELLOW),p(1, 1, 1, -1, 0, COLORS.YELLOW),
-     p(1, -1, 1, 1, 0, COLORS.YELLOW), p(1, 1, 1, 1, 0, COLORS.YELLOW),  
-     p(1, 0,1,0,0, colors.blue),
-     ]
-  },
-  {
-   name: 'third lawer',
-   pieces: [ 
-    p(0, 0, 2, -1, 0, COLORS.WHITE), p(0, 0, 2, 1, 0, COLORS.WHITE),
-   p(0, -1, 2, 0, 0, colors.white), p(0, 1, 2, 0, 0 , colors.white),
-   ]
-  },
-  {
-    name: 'capstone',
-    pieces: [ p(0,0,3,0,0,colors.yellow)]
-  }
-  ]
-},
-archway: {
-  id: 'archway', name: 'small archway',
-  steps:[
-    {
-      name: 'LEFT & RIGHTS PILLARS', 
-    PIECES: [
-      P(2, -2,0,0,1, COLORS.DARK_GYAY), p(2, -2, 1, 0, 1, COLORS.DARK_GRAY),
-      P(2,2,0,0,1, COLORS.DARK_GYAY), P(2,2,1,0,1,COLORS.DARK_GRAY),
-   ]
-    },
-    {
-      name: 'pillar tops',
-      pieces: [
-        p(2, -2, 2, 0, 1, colors.red), p(2, 2, 2, 0, 1, colors.red),
-       ] 
-    },
-    {
-      name: 'arch lintel',
-      pieces: [
-       p(2, -1, 3, 0, 0, COLORS.BLUE),p(2, 1, 3, 0, 0, COLORS.BLUE),
-       p(0, 0, 3, 0, 0, COLORS.YELLOW),
-       ]
-    },
-    {
-      name: 'top decoration',
-      pieces: [
-        p(0, -1, 4, 0, 0, colors.green), p(0, 1, 4, 0, 0, COLORS.GREEN),
-       p(0,0,4,0,0, colors.white),
-       ]
-    }
-    ]
-  },
-   house: {
-     id: 'house', name: 'small house',
-     steps: [ 
-      {
-        name: 'foundation',
-        pieces: [
-          p(2, -1, 0, -1, 0, colors.dark_gray), p(2, 1, 0, -1, 0, COLORS.DARK_GRAY),
-          p(2, -1, 0, 1, 0, COLORS.DARK_GRAY), p(2, 1, 0, 1, 0, COLORS.DARK_GRAY),
-          p(2, 0, 0, -1, 0, COLORS.RED),p(2, 0, 0, 1, 0, COLORS.RED),
+    const COLOR_PALETTE = [COLORS.RED, COLORS.BLUE, COLORS.YELLOW, COLORS.GREEN, COLORS.WHITE, COLORS.ORANGE, COLORS.LIME, COLORS.TEAL, COLORS.DARK_GRAY];
+
+    const MAT_CONFIG = { roughness: 0.15, metalness: 0.1 };
+    const GHOST_CONFIG = { opacity: 0.4, emissiveIntensity: 0.35 };
+    const GRID = { MIN_X: -5, MAX_X: 5, MIN_Z: -5, MAX_Z: 5, MAX_Y: 15, UNIT: 1, SNAP_THRESHOLD: 0.2 };
+
+    // Geometry dimensions: { w, h, d, studPositions: [[x,z], ...] }
+    const BRICK_GEOM = {
+      [BRICK_TYPE.STUD_1X1]: { w: 0.88, h: 1.0, d: 0.88, studs: [[0, 0]], studRadius: 0.22, studHeight: 0.2 },
+      [BRICK_TYPE.BLOCK_2X2]: { w: 1.88, h: 1.0, d: 1.88, studs: [[-0.35,-0.35],[0.35,-0.35],[-0.35,0.35],[0.35,0.35]], studRadius: 0.22, studHeight: 0.2 },
+      [BRICK_TYPE.BLOCK_2X4]: { w: 3.88, h: 1.0, d: 1.88, studs: [[-1.35,-0.35],[-0.45,-0.35],[0.45,-0.35],[1.35,-0.35],[-1.35,0.35],[-0.45,0.35],[0.45,0.35],[1.35,0.35]], studRadius: 0.22, studHeight: 0.2 },
+    };
+
+    // PUZZLE SCHEMAS 
+    function p(type, x, y, z, rotY, color) { return { type, x, y, z, rotY, color }; }
+    // rotY: 0=0°, 1=90°, 2=180°, 3=270°
+
+    const PUZZLES = {
+      pyramid: {
+        id: 'pyramid', name: 'Mini Pyramid',
+        steps: [
+          {
+            name: 'Base Layer (3×3)',
+            pieces: [
+              p(2, -1, 0, -1, 0, COLORS.RED), p(2, 1, 0, -1, 0, COLORS.RED),
+              p(2, -1, 0, 1, 0, COLORS.RED), p(2, 1, 0, 1, 0, COLORS.RED),
+              p(2, 0, 0, -1, 0, COLORS.DARK_GRAY), p(2, 0, 0, 1, 0, COLORS.DARK_GRAY),
+              p(2, -1, 0, 0, 0, COLORS.DARK_GRAY), p(2, 1, 0, 0, 0, COLORS.DARK_GRAY),
+              p(1, 0, 0, 0, 0, COLORS.BLUE),
+            ]
+          },
+          {
+            name: 'Second Layer (2×2)',
+            pieces: [
+              p(1, -1, 1, -1, 0, COLORS.YELLOW), p(1, 1, 1, -1, 0, COLORS.YELLOW),
+              p(1, -1, 1, 1, 0, COLORS.YELLOW), p(1, 1, 1, 1, 0, COLORS.YELLOW),
+              p(1, 0, 1, 0, 0, COLORS.BLUE),
+            ]
+          },
+          {
+            name: 'Third Layer',
+            pieces: [
+              p(0, 0, 2, -1, 0, COLORS.WHITE), p(0, 0, 2, 1, 0, COLORS.WHITE),
+              p(0, -1, 2, 0, 0, COLORS.WHITE), p(0, 1, 2, 0, 0, COLORS.WHITE),
+            ]
+          },
+          {
+            name: 'Capstone',
+            pieces: [ p(0, 0, 3, 0, 0, COLORS.YELLOW) ]
+          }
         ]
       },
-      {
-        name: 'walls',
-        pieces: [
-          p(2, -1, 1, -1, 0, COLORS.WHITE), p(2, 1, 1,-1,0, colors.white),
-          p(2, -1, 1, 1, 0, COLORS.WHITE), p(2, 1, 1, 1, 0, COLORS.WHITE),
-         ]
+      archway: {
+        id: 'archway', name: 'Small Archway',
+        steps: [
+          {
+            name: 'Left & Right Pillars',
+            pieces: [
+              p(2, -2, 0, 0, 1, COLORS.DARK_GRAY), p(2, -2, 1, 0, 1, COLORS.DARK_GRAY),
+              p(2, 2, 0, 0, 1, COLORS.DARK_GRAY), p(2, 2, 1, 0, 1, COLORS.DARK_GRAY),
+            ]
+          },
+          {
+            name: 'Pillar Tops',
+            pieces: [
+              p(2, -2, 2, 0, 1, COLORS.RED), p(2, 2, 2, 0, 1, COLORS.RED),
+            ]
+          },
+          {
+            name: 'Arch Lintel',
+            pieces: [
+              p(2, -1, 3, 0, 0, COLORS.BLUE), p(2, 1, 3, 0, 0, COLORS.BLUE),
+              p(0, 0, 3, 0, 0, COLORS.YELLOW),
+            ]
+          },
+          {
+            name: 'Top Decoration',
+            pieces: [
+              p(0, -1, 4, 0, 0, COLORS.GREEN), p(0, 1, 4, 0, 0, COLORS.GREEN),
+              p(0, 0, 4, 0, 0, COLORS.WHITE),
+            ]
+          }
+        ]
       },
-      {}   
-  {
-    pieces: [
-p(2, -1, 2, -1, 0, COLORS.BLUE), p(2, 1, 2, -1, 0, COLORS.BLUE), 
- p(2, -1, 2, 1, 0, COLORS.BLUE), p(2, 1, 2, 1, 0, COLORS.BLUE),
-  ]
-  },
-  {
-    name: 'roof',
-    pieces: [
-      p(2, 0, 3, -1, 0, COLORS.RED), p(2, 0, 3, 1, 0, COLORS.RED),
-     p(1, 0, 4, 0, 0, COLORS.YELLOW),
-     ]
-  }
-  ]
-}    
-},
+      house: {
+        id: 'house', name: 'Small House',
+        steps: [
+          {
+            name: 'Foundation',
+            pieces: [
+              p(2, -1, 0, -1, 0, COLORS.DARK_GRAY), p(2, 1, 0, -1, 0, COLORS.DARK_GRAY),
+              p(2, -1, 0, 1, 0, COLORS.DARK_GRAY), p(2, 1, 0, 1, 0, COLORS.DARK_GRAY),
+              p(2, 0, 0, -1, 0, COLORS.RED), p(2, 0, 0, 1, 0, COLORS.RED),
+            ]
+          },
+          {
+            name: 'Walls',
+            pieces: [
+              p(2, -1, 1, -1, 0, COLORS.WHITE), p(2, 1, 1, -1, 0, COLORS.WHITE),
+              p(2, -1, 1, 1, 0, COLORS.WHITE), p(2, 1, 1, 1, 0, COLORS.WHITE),
+            ]
+          },
+          {
+            name: 'Wall Tops',
+            pieces: [
+              p(2, -1, 2, -1, 0, COLORS.BLUE), p(2, 1, 2, -1, 0, COLORS.BLUE),
+              p(2, -1, 2, 1, 0, COLORS.BLUE), p(2, 1, 2, 1, 0, COLORS.BLUE),
+            ]
+          },
+          {
+            name: 'Roof',
+            pieces: [
+              p(2, 0, 3, -1, 0, COLORS.RED), p(2, 0, 3, 1, 0, COLORS.RED),
+              p(1, 0, 4, 0, 0, COLORS.YELLOW),
+            ]
+          }
+        ]
+      }
+    };
 
- // ==================== AUDIO ENGINE ====================
-   class AudioEngine {
-   constructor() { 
-    this._ctx = null;
-   }
-   _ensure() { 
-    if (!this._ctx) {
-      this._ctx = new (window.audiocontext || window.webkitaudiocontext)();
+    // ==================== AUDIO ENGINE ====================
+    class AudioEngine {
+      constructor() {
+        this._ctx = null;
+      }
+      _ensure() {
+        if (!this._ctx) {
+          this._ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this._ctx.state === 'suspended') this._ctx.resume();
+        return this._ctx;
+      }
+      playSnap(brickType) {
+        const ctx = this._ensure();
+        const now = ctx.currentTime;
+        if (brickType === BRICK_TYPE.STUD_1X1) {
+          // High crisp click for small studs
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(2000, now);
+          osc.frequency.exponentialRampToValueAtTime(1000, now + 0.03);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.connect(gain).connect(ctx.destination);
+          osc.start(now); osc.stop(now + 0.05);
+        } else if (brickType === BRICK_TYPE.BLOCK_2X2) {
+          // Medium thud
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.exponentialRampToValueAtTime(100, now + 0.12);
+          gain.gain.setValueAtTime(0.4, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.connect(gain).connect(ctx.destination);
+          osc.start(now); osc.stop(now + 0.18);
+          // Noise burst for plastic texture
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.type = 'square';
+          osc2.frequency.setValueAtTime(1400, now);
+          gain2.gain.setValueAtTime(0.08, now);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+          osc2.connect(gain2).connect(ctx.destination);
+          osc2.start(now); osc2.stop(now + 0.025);
+        } else {
+          // Deep thud for large blocks
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(200, now);
+          osc.frequency.exponentialRampToValueAtTime(60, now + 0.18);
+          gain.gain.setValueAtTime(0.5, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.connect(gain).connect(ctx.destination);
+          osc.start(now); osc.stop(now + 0.25);
+          // Noise burst
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.type = 'square';
+          osc2.frequency.setValueAtTime(1100, now);
+          gain2.gain.setValueAtTime(0.1, now);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+          osc2.connect(gain2).connect(ctx.destination);
+          osc2.start(now); osc2.stop(now + 0.035);
+        }
+      }
+      playError() {
+        const ctx = this._ensure();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.linearRampToValueAtTime(90, now + 0.12);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now); osc.stop(now + 0.18);
+      }
+      playStepComplete() {
+        const ctx = this._ensure();
+        const now = ctx.currentTime;
+        const freqs = [523, 659, 784, 1047]; // C5 E5 G5 C6
+        freqs.forEach((f, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + i * 0.1);
+          gain.gain.setValueAtTime(0, now + i * 0.1);
+          gain.gain.linearRampToValueAtTime(0.2, now + i * 0.1 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.28);
+          osc.connect(gain).connect(ctx.destination);
+          osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.28);
+        });
+      }
+      playVictory() {
+        const ctx = this._ensure();
+        const now = ctx.currentTime;
+        const melody = [523, 659, 784, 1047, 784, 1047, 1319]; // C5 E5 G5 C6 G5 C6 E6
+        melody.forEach((f, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + i * 0.12);
+          gain.gain.setValueAtTime(0, now + i * 0.12);
+          gain.gain.linearRampToValueAtTime(0.22, now + i * 0.12 + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.35);
+          osc.connect(gain).connect(ctx.destination);
+          osc.start(now + i * 0.12); osc.stop(now + i * 0.12 + 0.35);
+        });
+      }
     }
-    if (this._ctx.state === 'suspended') this._ctx.resume();
-    return this._ctx;
-  }
-     playsnap(bricktype) {
-      const ctx = this._ensure();
-      const now = ctx.currenttime;
-      if (bricktype === brick_types.stud_1x1)
-       // High crisp click for small studs
-      const osc = ctx.createoscillator();
-      const gain = ctx.creategain();
-      osc.type = 'sine';
-      osc.frequency.setvalueattime(2000,now);
-      osc.frequency.exponentialramptovalueatime(1000, now + 0.03);
-      gain.gain.setvalueattime(0.25, now);
-      gain.gain.exponentialramptovalueatime(0.001, now + 0.05);
-      osc.connect(gain).connect(ctx.desrtination);
-      osc. start(now); osc.stop(now + 0.05);
-     } else if (bricktypes === brick_types.blocks_2x2) {
-       // Medium thud
-       const osc = ctx.createoscillator();
-       const gain = ctx.creategain();
-       osc.type = 'triangle';
-       osc.frequency.setvalueattime(300, now);
-       osc.frequency.exponentialramptovalueatime(100, now + 0.12);
-       gain.gain.setvalueattime(0.4, now);
-       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-       osc.connect(gain).connect(ctx.destination);
-       osc.start(now); osc.stop(now + 0.18);
-       // noise burst for plastic texture 
-       const osc2 = ctx.createoscillator();
-       const gain2 = ctx.creategain();
-      osc2.type = 'square';
-      osc2.frequency.setvalueattime(1400, now);
-      gain2.gain.setvalueattime(0.08, now);
-      gain2.gain .exponentialramptovalueattime(0.001, now + 0.025);
-      osc2.connect(gain2).connect(ctx.destination);
-      osc2.start(now); osc2.stop(now + 0.025);
-     } else {
-      // deep thund for large blocks
-      const osc = ctx.createoscillator();
-      const gain = ctx.creategain();
-      osc.type = 'triangle';
-      osc.frequency.setvalueattime(200, now);
-      osc.frequency.exponentialramptovalueattime(60, now + 0.18);
-      gain.gain.setvalueattime(0.5, now);
-      gain.gain.exponentialramptovalueattime(0.001, now + 0.25);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(now); osc.stop(now + 0.25);
-      // noise burst 
-      const osc2 = ctx.createoscillator();
-      const gain2 = ctx.creategain();
-      osc2.type = 'square';
-      osc2.frequency.setvalueattime(1100, now);
-      gain2.gain.setvalueattime(0.1, now);
-      gain2.gain.exponentialramptovalueattime(0.001, now + 0.035)
-      osc2.connect(gain2).connect(ctx.destination):
-      osc2.start(now); osc2.stop(now + 0.035);
-     }
+
+    //  BRICK GEOMETRY FACTORY 
+    function createBrickGeometry(type) {
+      const cfg = BRICK_GEOM[type];
+      const halfH = cfg.h / 2;
+      const geometries = [];
+
+      // Main body box — centered at origin, will shift to bottom-pivot later
+      const body = new THREE.BoxGeometry(cfg.w, cfg.h, cfg.d, 2, 1, 2);
+      geometries.push(body);
+
+      // Studs on top
+      const studGeo = new THREE.CylinderGeometry(cfg.studRadius, cfg.studRadius, cfg.studHeight, 20);
+      studGeo.translate(0, halfH + cfg.studHeight / 2, 0);
+      for (const [sx, sz] of cfg.studs) {
+        const s = studGeo.clone();
+        s.translate(sx, 0, sz);
+        geometries.push(s);
+      }
+
+      // Merge all
+      const merged = mergeGeometries(geometries);
+      // Shift pivot to bottom
+      merged.translate(0, halfH, 0);
+      merged.computeVertexNormals();
+      return merged;
     }
-    playerror(){
-    const ctx = this._ensure();
-    const now = ctx.currenttime;
-    const osc = ctxcreateoscillator();
-    const gain = ctx.creategain();
-    osc.type = 'sawtooth';
-    osc.frequency.setvalueattime(140, now);
-    osc.frequency.linearramptovalueattime(90, now + 0.12)
-    gain.gain.setvalueattime(0.12, now);
-    gain.gain.exponentialramptovalueattime(0.001, now + 0.18);
-    gain.connect(gain).connect(ctx.destination);
-    osc.start(now); osc.stop(now + 0.18);
+
+    // ==================== SCENE SETUP ====================
+    function createRenderer(container, pixelRatio = 1.5) {
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, pixelRatio));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.1;
+      const rect = container.getBoundingClientRect();
+      renderer.setSize(rect.width, rect.height);
+      container.appendChild(renderer.domElement);
+      return renderer;
     }
-    playstepcomplete() {
-      const ctx = this._ensure();
-      const now = ctx.currenttime;
-      const freqs = [523, 659, 784, 1047]; // C5 E5 G5 C6 
-      freqs.foreach(( f, i) => {
-      const osc = ctx.createOscillator(); 
-      const gain = ctx.creategain();
-      osc.type = 'shine';
-       osc.frequency.setValueAtTime(f, now + i * 0.1);
-       gain.gain.setvalueattime(0, now + i * 0.1);
-       gain.gain.linearramptovalueattime(0.2, now + i * 0.02);
-       gain.gain.exponentialramptovalueattime(0.001, now + i * 0.1 + 0.28);
-         osc.connect(gain).connect(ctx.destination);
-        osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.28);
-      });
-    }
-    playvictory() {
-      const ctx = this._ensure();
-      cpnst now = ctx.currenttime;
-   const melody = [523, 659, 784, 1047, 784, 1047, 1319]; // C5 E5 G5 C6 G5 C6 E6
-   melody.foreach((f, i) > {
- const osc = ctx.createOscillator();
- const gain = ctx.creategain();
- osc.type = 'sine';
- osc.frequency.setvalueattime(f, now + i * 0.12);
- gain.gain.setvalueattime(0, now + i * 0.12);
-gain.gain.linearramptovalueattime(0.25, now + i * 0.12 + 0.03);
-gain.gain.exponentialramptovalueattime(0.001, now + i * 0.12 + 0.35);
-osc.connect(gain).connect(ctx.destination);
-osc.start(now + i * 0.12); osc.stop(now + i * 0.12 + 0.35);
-   });
-  }
-}
 
-  // ==================== BRICK GEOMETRY FACTORY ====================
- function createbrickgeometry(type) { 
-  const cfg = brick_geom(type) {
-   const halfh = cfg.h / 2;
-   const geometries = [];
-   
-   // Main body box — centered at origin, will shift to bottom-pivot later
-   const body = new three.boxgeometry(cfg.w, cfg.h, cfg.d, 2, 1, 2);
-   geometries.push(body);
+    function createLighting(scene, intensity = 1.0) {
+      const key = new THREE.DirectionalLight(0xffffff, 3.0 * intensity);
+      key.position.set(8, 14, 6);
+      key.castShadow = true;
+      key.shadow.mapSize.set(1024, 1024);
+      key.shadow.camera.near = 0.5;
+      key.shadow.camera.far = 60;
+      key.shadow.camera.left = -15; key.shadow.camera.right = 15;
+      key.shadow.camera.top = 15; key.shadow.camera.bottom = -15;
+      key.shadow.bias = -0.0002;
+      key.shadow.normalBias = 0.02;
+      scene.add(key);
 
-   // Studs on top
-   const studgeo = new three.cylindergeometry(cfg.studradius, cfg.studradius, cfg.studheight, 20);
-   studgeo.translate(0, halfh + cfg.studheight / 2, 0);
-   for (const [sx, sz] of cfg.studs) {
-    const s = studgeo.clone();
-    s.translate(sx, 0, sz);
-    geometries.push(s);
-   }
+      const fill = new THREE.DirectionalLight(0xffeedd, 1.5 * intensity);
+      fill.position.set(-4, 3, -3);
+      scene.add(fill);
 
-   // Merge all
-   const merged = mergegeometries(geometries);
-   // shift pivot to bottom 
-   mereged.translate(0, halfh, 0);
-   merged.computevertexnormals();
-   return merged;
-  }
-
-  // ==================== SCENE SETUP ====================
-  function createrenderer(container, pixelratio = 1.5) {
-const renderer = new three.webglrenderer({ antialias: true, alpha: false });
-renderer.setpixelratio(math.min(window.devicepixelratio, pixelratio));
-renderer.shadowmap.enabled = true;
-renderer.shadowmap.type = three.pcfsoftshadowmap;
-renderer.tonemapping = three.acesfilmictonemapping;
-renderer.tonemappingexposure = 1.1;
-const rect = container.getboundingclientrect();
-renderer.setsize(rect.width, rect.height);
-container.appendchild(renderer.domelement);
-return renderer;
-  }
-
-  function createlight(scene, intensity = 1.0){
-    const key = new three.directionalight(0xffffff, 3.0 * intensity);
-    key.position.set(8, 14, 6);
-    key.castshadow = true;
-    key.shadow.mapsize.set(1024, 1024);
-    key.shadow.camera.near = 0.5;
-    key.shadow.camera.far = 60;
-    key.shadow.camera.left = -15; key.shadow.cmaera.rightn = 15;
-    key.shadow.camera.top = 15; key.shadow.camera.bottom = -15;
-    key.shadow.bias = -0.0002;
-    key.shadow.normalbias = 0.02;
-    scene.add(key);
-
-    const fill = new three directionallight(0xffeedd, 1.5 * intensity);
-    fill.postion.set(-4, 3, -3);
-    scene.add(fill)
-
-    const ambient = new three.directionllight(0x8899aa, 1.2 * intensity);
-    scene.add(ambient);
+      const ambient = new THREE.AmbientLight(0x8899aa, 1.2 * intensity);
+      scene.add(ambient);
 
       const hemi = new THREE.HemisphereLight(0xddeeff, 0x889966, 0.7 * intensity);
-   scene.add(hemi);
-   
-   const rim = new three.directionallight(0xffffff, 1.0 * intensity);
-   rim.position.st(0,5, -8);
-   scene.add(rim);
-  }
+      scene.add(hemi);
 
-  function createground(scene) {
-    const groundgeo = new three.planegeomtry(12, 12);
-    const groundmat = new three.meshstandardmaterial({ color: 0x3a3a40,roughness: 0.05});
-    const ground = three.mesh(groundgeo, groundmat);
-    ground.rotation.x = -math.pi / 2;
-    ground.postive.y = -0.01;
-    ground.receiveshadow = true;
-    ground.name = 'ground';
-    scene.add(grid);
-
-    const grid = new three.gridhelper(10, 10, 0x555555,0x333333);
-    grid.position.y = 0.005;
-    grid.name = "grid";
-scene.add(grid);
-
-// build plate border 
-const bordergeo = new  three .boxgeometry(10.3, 0.5, 10.3);
-const bordermat = new three.meshstandardmaterial({color: 0x2a2a30< roughness: 0.3, metalness: 0.2});
-const border = new three.mesh(bordergeo,bordermat);
-border.position.y = -0.08;
-border.receiveshadow = true;
-border.name = 'border';
-scene.add(border);
-  }
-
-  // ==================== BRICK MANAGER (InstancedMesh) ====================
-  class brickmanager {
-    constructor (scene){
-      this.scene = scene;
-     this.brickmaterial = new three.meshstandardmaterial({
-      ...mat_config,
-      color: 0xffffff,
-     });
-     
-     this.grometries = {};
-     this.meshes = {};
-     this.counts = {};
-     this.occupancy = new map(); // "x,y,z"-> true
-     
-     for (const type of object.value(brick_type)) {
-      const geo = createbrickgeometry(types);
-      this.geometries[types] = geo;
-      const mesh = new three.instancedmesh(geo, this.brickmaterial, 100);
-     mesh.castshadow = true;
-     mesh.receiveshadow = true;
-     mesh.count  = 0;
-    mesh.name = 'bricks_${type}';
-    this.meshes[type] = mesh;
-    this.counts[type] = 0;
-    scene.add(mesh);
-     }
+      const rim = new THREE.DirectionalLight(0xffffff, 1.0 * intensity);
+      rim.position.set(0, 5, -8);
+      scene.add(rim);
     }
 
-    addbricks(type, x, y, z, roty, color) {
-     const mesh = this.meshes[type];
-     const idx = this.counts[type];
-     if (idx >= 100) return false;
-     
-     const matrix = new three.matrix4();
-     const rady = (roty * math.pi) / 2;
-     matrix.compose(
-      new three.vector3(x, y, z),
-      new three.quaternion().setfromeuler(new three.euler(0, rady, 0))
-      new three.vector3(1,1,1)
-     );
-     mesh.setmatrixart(idx, matrix);
-     mesh.setcolorat(idx, new three.color(color));
-     mesh.instancematrix.needsupdate = true;
-     if (mesh.instancecolor) mesh.instancecolor.needsupdate = true;
-     mesh.count = idx + 1; // critical: tell three.js how many instance to render
-     this.counts[type] = idx + 1;
-     this.occupancy.set(`${x},${y},${z}`, true);
-     return true;
+    function createGround(scene) {
+      const groundGeo = new THREE.PlaneGeometry(12, 12);
+      const groundMat = new THREE.MeshStandardMaterial({ color: 0x3a3a40, roughness: 0.5, metalness: 0.05 });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = -0.01;
+      ground.receiveShadow = true;
+      ground.name = 'ground';
+      scene.add(ground);
+
+      const grid = new THREE.GridHelper(10, 10, 0x555555, 0x333333);
+      grid.position.y = 0.005;
+      grid.name = 'grid';
+      scene.add(grid);
+
+      // Build plate border
+      const borderGeo = new THREE.BoxGeometry(10.3, 0.15, 10.3);
+      const borderMat = new THREE.MeshStandardMaterial({ color: 0x2a2a30, roughness: 0.3, metalness: 0.2 });
+      const border = new THREE.Mesh(borderGeo, borderMat);
+      border.position.y = -0.08;
+      border.receiveShadow = true;
+      border.name = 'border';
+      scene.add(border);
     }
 
-    isoccupied (x,y,z) { 
-      return this.occupany.has(`${x},${y},${z}`);
-    }
+    // BRICK MANAGER (InstancedMesh) 
+    class BrickManager {
+      constructor(scene) {
+        this.scene = scene;
+        this.brickMaterial = new THREE.MeshStandardMaterial({
+          ...MAT_CONFIG,
+          color: 0xffffff,
+        });
 
-    clearall() {
-      for (const types of object.value(bricks_types)) {
-      this.counts[type] = 0;
-      this.mesh[type].count = 0;
+        this.geometries = {};
+        this.meshes = {};
+        this.counts = {};
+        this.occupancy = new Map(); // "x,y,z" -> true
+
+        for (const type of Object.values(BRICK_TYPE)) {
+          const geo = createBrickGeometry(type);
+          this.geometries[type] = geo;
+          const mesh = new THREE.InstancedMesh(geo, this.brickMaterial, 100);
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+          mesh.count = 0;
+          mesh.name = `bricks_${type}`;
+          this.meshes[type] = mesh;
+          this.counts[type] = 0;
+          scene.add(mesh);
+        }
       }
-      this.occupancy.clear();
+
+      addBrick(type, x, y, z, rotY, color) {
+        const mesh = this.meshes[type];
+        const idx = this.counts[type];
+        if (idx >= 100) return false;
+
+        const matrix = new THREE.Matrix4();
+        const radY = (rotY * Math.PI) / 2;
+        matrix.compose(
+          new THREE.Vector3(x, y, z),
+          new THREE.Quaternion().setFromEuler(new THREE.Euler(0, radY, 0)),
+          new THREE.Vector3(1, 1, 1)
+        );
+        mesh.setMatrixAt(idx, matrix);
+        mesh.setColorAt(idx, new THREE.Color(color));
+        mesh.instanceMatrix.needsUpdate = true;
+        if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+        mesh.count = idx + 1; // CRITICAL: tell Three.js how many instances to render
+        this.counts[type] = idx + 1;
+        this.occupancy.set(`${x},${y},${z}`, true);
+        return true;
+      }
+
+      isOccupied(x, y, z) {
+        return this.occupancy.has(`${x},${y},${z}`);
+      }
+
+      clearAll() {
+        for (const type of Object.values(BRICK_TYPE)) {
+          this.counts[type] = 0;
+          this.meshes[type].count = 0;
+        }
+        this.occupancy.clear();
+      }
+
+      get allMeshes() {
+        return Object.values(this.meshes);
+      }
     }
 
-    get allmeshes() {
-      return object.values(this.meshes);
+    // ==================== SIDEBAR BLUEPRINT SCENE ====================
+    class BlueprintScene {
+      constructor(container) {
+        this.container = container;
+        this.renderer = createRenderer(container, 1.0);
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0x0a0a10);
+        this.scene.fog = new THREE.Fog(0x0a0a10, 3, 18);
+
+        const rect = container.getBoundingClientRect();
+        this.camera = new THREE.PerspectiveCamera(45, rect.width / Math.max(rect.height, 1), 0.1, 50);
+        this.camera.position.set(5, 4.5, 6);
+        this.camera.lookAt(0, 1.5, 0);
+
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.target.set(0, 1.5, 0);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.08;
+        this.controls.autoRotate = false;
+        this.controls.enableZoom = true;
+        this.controls.zoomSpeed = 1.2;
+        this.controls.minDistance = 1.5;
+        this.controls.maxDistance = 12;
+        this.controls.maxPolarAngle = Math.PI * 0.75;
+        this.controls.update();
+
+        createLighting(this.scene, 0.65);
+        createGround(this.scene);
+
+        this.targetMeshes = [];
+        this.blueprintMaterial = new THREE.MeshStandardMaterial({
+          ...MAT_CONFIG,
+          color: 0x4A90D9,
+          transparent: true,
+          opacity: 0.55,
+          depthWrite: false,
+        });
+      }
+
+      update(stepPieces, brickGeometries) {
+        // Clear old meshes (do NOT dispose geometries — they are shared with main scene)
+        for (const m of this.targetMeshes) {
+          this.scene.remove(m);
+        }
+        this.targetMeshes = [];
+
+        if (!stepPieces || stepPieces.length === 0) return;
+
+        // Calculate bounding box of target pieces
+        let minX = Infinity, minY = Infinity, minZ = Infinity;
+        let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+
+        for (const piece of stepPieces) {
+          const geo = brickGeometries[piece.type];
+
+          // Per-piece colored material — shows the actual brick color with transparency
+          const mat = new THREE.MeshStandardMaterial({
+            ...MAT_CONFIG,
+            color: piece.color,
+            transparent: true,
+            opacity: 0.65,
+            emissive: piece.color,
+            emissiveIntensity: 0.15,
+            depthWrite: true,
+          });
+
+          const mesh = new THREE.Mesh(geo, mat);
+          const radY = (piece.rotY * Math.PI) / 2;
+          mesh.position.set(piece.x, piece.y, piece.z);
+          mesh.rotation.y = radY;
+          mesh.castShadow = false;
+          mesh.receiveShadow = true;
+          this.scene.add(mesh);
+          this.targetMeshes.push(mesh);
+
+          // Thin edge outline so pieces are clearly visible even when transparent
+          const edgeGeo = new THREE.EdgesGeometry(geo, 20);
+          const edgeMat = new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.5,
+            depthTest: true,
+          });
+          const edgeLine = new THREE.LineSegments(edgeGeo, edgeMat);
+          mesh.add(edgeLine);
+
+          // Track bounds
+          minX = Math.min(minX, piece.x - 0.5);
+          minY = Math.min(minY, piece.y);
+          maxX = Math.max(maxX, piece.x + 0.5);
+          maxY = Math.max(maxY, piece.y + 1);
+          minZ = Math.min(minZ, piece.z - 0.5);
+          maxZ = Math.max(maxZ, piece.z + 0.5);
+        }
+
+        // Center camera on model
+        const cx = (minX + maxX) / 2;
+        const cy = (minY + maxY) / 2;
+        const cz = (minZ + maxZ) / 2;
+        const span = Math.max(maxX - minX, maxZ - minZ, 2) * 1.8;
+
+        this.controls.target.set(cx, cy, cz);
+        this.camera.position.set(cx + span * 0.7, cy + span * 0.5, cz + span);
+        this.camera.lookAt(cx, cy, cz);
+        this.controls.update();
+      }
+
+      resize() {
+        const rect = this.container.getBoundingClientRect();
+        this.renderer.setSize(rect.width, rect.height);
+        this.camera.aspect = rect.width / Math.max(rect.height, 1);
+        this.camera.updateProjectionMatrix();
+      }
+
+      render() {
+        this.controls.update();
+        this.renderer.render(this.scene, this.camera);
+      }
     }
-  }
 
-   // ==================== SIDEBAR BLUEPRINT SCENE ====================
-   class blueprintscene {
-    constuctor(container) {
-      this.container = container;
-      this.renderer = createrenderer(container, 1.0);
-      this.scene = new three.scene();
-      this.scene.background = new three.color(0x0a0a10);
-      this.scene.fog = new three.fog(0x0a0a10, 3, 18);
+    //  MAIN APPLICATION 
+      constructor() {
+        // DOM refs
+        this.mainContainer = document.getElementById('main-vp-container');
+        this.sidebarContainer = document.getElementById('sidebar-vp-container');
+        this.inventoryEl = document.getElementById('inventory-pieces');
+        this.stepBadge = document.getElementById('step-badge');
+        this.rotationHint = document.getElementById('rotation-hint');
+        this.toastEl = document.getElementById('toast');
+        this.completionOverlay = document.getElementById('completion-overlay');
+        this.puzzleSelect = document.getElementById('puzzle-select');
 
-    const rect = container.getboundingclientrect();
-    this.camera = new three.perspectivecamera(45, rect.width / math.max(rect.height, 1), 0.1, 50);
-    this.camera.position.set(5, 4.5, 6);
-    this.camera.looksat(0, 1.5,0);
-    
-    this.controls = new orbitcontrils(this.camera, this.renderer.comelement);
-    this.controls.target.set(0, 1.5, 0);
-    this.controls.enabledamping = true;
-    this.controls.dampingfactor = 0.08;
-    this.controls.autorotate = false;
-    this.controls.enablezoom = true;
-    this.controls.zoomspeed = 1.2;
-    this.controls.mindistance = 1.5;
-    this.controls.maxdistance = 12;
-this.controls.maxpolarangle = math.pi * 0.75;
-this.controls.update();
+        // Audio
+        this.audio = new AudioEngine();
 
-createlighting(this.scene, 0.65);
-createground(this.scene);
+        // Main scene
+        this.mainRenderer = createRenderer(this.mainContainer);
+        this.mainScene = new THREE.Scene();
+        this.mainScene.background = new THREE.Color(0x0a0a10);
+        this.mainScene.fog = new THREE.Fog(0x0a0a10, 5, 30);
 
-this.targetmeshes = [];
-this.blueprintmaterial = new three.meshstandardmaterial({
-  ...mat_config,
-  color: 0x4a90d9,
-  transparent: true,
-  opacity: 0.55,
-  depthwrite: false,
-});
+        const mainRect = this.mainContainer.getBoundingClientRect();
+        this.mainCamera = new THREE.PerspectiveCamera(50, mainRect.width / Math.max(mainRect.height, 1), 0.1, 60);
+        this.mainCamera.position.set(7, 5.5, 8);
+        this.mainCamera.lookAt(0, 1, 0);
+
+        this.mainControls = new OrbitControls(this.mainCamera, this.mainRenderer.domElement);
+        this.mainControls.target.set(0, 1, 0);
+        this.mainControls.enableDamping = true;
+        this.mainControls.dampingFactor = 0.08;
+        this.mainControls.enableZoom = true;
+        this.mainControls.zoomSpeed = 1.2;
+        this.mainControls.minDistance = 2;
+        this.mainControls.maxDistance = 30;
+        this.mainControls.maxPolarAngle = Math.PI * 0.78;
+        this.mainControls.update();
+
+        createLighting(this.mainScene);
+        createGround(this.mainScene);
+
+        // Brick manager
+        this.brickManager = new BrickManager(this.mainScene);
+
+        // Sidebar blueprint
+        this.blueprint = new BlueprintScene(this.sidebarContainer);
+
+        // Ghost preview
+        this.ghostMesh = null;
+        this.ghostMaterial = new THREE.MeshStandardMaterial({
+          ...MAT_CONFIG,
+          color: 0xffffff,
+          transparent: true,
+          opacity: GHOST_CONFIG.opacity,
+          emissive: 0xffffff,
+          emissiveIntensity: GHOST_CONFIG.emissiveIntensity,
+          depthWrite: false,
+        });
+        // Glow edge for ghost
+        this.ghostEdgeMaterial = new THREE.LineBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.5,
+          depthTest: true,
+          depthWrite: false,
+        });
+        this.ghostEdge = null;
+
+        // Raycaster
+        this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
+
+        // Game state
+        this.state = 'IDLE'; // IDLE | DRAGGING | STEP_COMPLETE | PUZZLE_COMPLETE
+        this.currentPuzzleId = 'pyramid';
+        this.currentStepIndex = 0;
+        this.activeBrickType = null; // which brick type is being dragged
+        this.activeBrickColor = null;
+        this.activeBrickRotation = 0;
+        this.placedBricks = []; // { type, x, y, z, rotY, color }
+        this.stepFulfilled = []; // per-step: Set of fulfilled piece indices
+
+        // Bindings
+        this._onPointerDown = this._onPointerDown.bind(this);
+        this._onPointerMove = this._onPointerMove.bind(this);
+        this._onPointerUp = this._onPointerUp.bind(this);
+        this._onKeyDown = this._onKeyDown.bind(this);
+        this._onResize = this._onResize.bind(this);
+        this._onContextMenu = this._onContextMenu.bind(this);
+
+        // Setup
+        this._bindEvents();
+        this._loadPuzzle(this.currentPuzzleId);
+
+        // Check URL hash
+        this._checkHash();
+
+        // Start
+        this._animate();
+      }
+
+      //  EVENTS 
+      _bindEvents() {
+        this.mainRenderer.domElement.addEventListener('pointerdown', this._onPointerDown);
+        this.mainRenderer.domElement.addEventListener('pointermove', this._onPointerMove);
+        this.mainRenderer.domElement.addEventListener('pointerup', this._onPointerUp);
+        this.mainRenderer.domElement.addEventListener('contextmenu', this._onContextMenu);
+        window.addEventListener('keydown', this._onKeyDown);
+        window.addEventListener('resize', this._onResize);
+
+        document.getElementById('btn-share').addEventListener('click', () => this._shareCreation());
+        document.getElementById('btn-share-complete').addEventListener('click', () => this._shareCreation());
+        document.getElementById('btn-play-again').addEventListener('click', () => this._playAgain());
+        document.getElementById('btn-cursor').addEventListener('click', () => this._deselectAll());
+        this.puzzleSelect.addEventListener('change', (e) => {
+          this._loadPuzzle(e.target.value);
+        });
+      }
+
+      _onContextMenu(e) {
+        e.preventDefault();
+        if (this.state === 'DRAGGING' || this.activeBrickType !== null) {
+          this._deselectAll();
+        }
+      }
+
+      _onKeyDown(e) {
+        if (e.key === 'r' || e.key === 'R') {
+          if (this.state === 'DRAGGING') {
+            this.activeBrickRotation = (this.activeBrickRotation + 1) % 4;
+            this._updateGhostTransform();
+            this.audio._ensure(); // init audio context on user gesture
+          }
+        }
+        if (e.key === 'Escape') {
+          if (this.state === 'DRAGGING') {
+            this._deselectAll();
+          } else if (this.activeBrickType !== null) {
+            this._deselectAll();
+          }
+        }
+      }
+
+      _onResize() {
+        const mainRect = this.mainContainer.getBoundingClientRect();
+        this.mainRenderer.setSize(mainRect.width, mainRect.height);
+        this.mainCamera.aspect = mainRect.width / Math.max(mainRect.height, 1);
+        this.mainCamera.updateProjectionMatrix();
+        this.blueprint.resize();
+      }
+
+      _getPointerPosition(event) {
+        const rect = this.mainRenderer.domElement.getBoundingClientRect();
+        this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      }
+
+      // RAYCASTING 
+      _raycastGrid() {
+        this.raycaster.setFromCamera(this.mouse, this.mainCamera);
+        const targets = [...this.brickManager.allMeshes, this.mainScene.getObjectByName('ground')];
+        const intersects = this.raycaster.intersectObjects(targets, false);
+
+        if (intersects.length === 0) return null;
+
+        const hit = intersects[0];
+        const point = hit.point.clone();
+
+        // Determine grid Y based on what we hit
+        let gridY;
+        if (hit.object.name === 'ground' || hit.object.name === 'border' || hit.object.name === 'grid') {
+          gridY = 0;
+        } else {
+          // Hit an existing brick. Bricks are 1 unit tall with bottom pivot.
+          // The top face of a brick at Y=N is at Y=N+1.
+          // Use Math.round on the hit Y since bricks occupy integer Y levels.
+          gridY = Math.round(point.y);
+          // Ensure we're placing on top (not inside) the hit brick
+          if (gridY <= Math.floor(point.y)) gridY = Math.floor(point.y) + 1;
+        }
+
+        // Snap to grid
+        const gridX = Math.round(point.x);
+        const gridZ = Math.round(point.z);
+
+        // Clamp
+        const cx = Math.max(GRID.MIN_X, Math.min(GRID.MAX_X, gridX));
+        const cz = Math.max(GRID.MIN_Z, Math.min(GRID.MAX_Z, gridZ));
+        const cy = Math.max(0, Math.min(GRID.MAX_Y, gridY));
+
+        return { x: cx, y: cy, z: cz };
+      }
+
+      //  GHOST PREVIEW 
+      _createGhost() {
+        if (this.ghostMesh) this._removeGhost();
+
+        const geo = this.brickManager.geometries[this.activeBrickType];
+        this.ghostMesh = new THREE.Mesh(geo, this.ghostMaterial);
+        this.ghostMesh.renderOrder = 1;
+        this.ghostMesh.material.depthTest = true;
+        this.ghostMesh.material.depthWrite = false;
+        this.mainScene.add(this.ghostMesh);
+
+        // Edge wireframe for clarity
+        const edgeGeo = new THREE.EdgesGeometry(geo, 15);
+        this.ghostEdge = new THREE.LineSegments(edgeGeo, this.ghostEdgeMaterial);
+        this.ghostEdge.renderOrder = 2;
+        this.ghostEdge.material.depthTest = true;
+        this.ghostEdge.material.depthWrite = false;
+        this.ghostMesh.add(this.ghostEdge);
+
+        this._updateGhostTransform();
+      }
+
+      _removeGhost() {
+        if (this.ghostMesh) {
+          this.mainScene.remove(this.ghostMesh);
+          if (this.ghostMesh.geometry) {
+            // Don't dispose — shared with InstancedMesh
+          }
+          this.ghostMesh = null;
+          this.ghostEdge = null;
+        }
+      }
+
+      _updateGhostTransform() {
+        if (!this.ghostMesh) return;
+        const pos = this._raycastGrid();
+        if (!pos) return;
+        this.ghostMesh.position.set(pos.x, pos.y, pos.z);
+        this.ghostMesh.rotation.set(0, (this.activeBrickRotation * Math.PI) / 2, 0);
+
+        // Color feedback: check proximity to any valid target
+        const step = this._currentPuzzle().steps[this.currentStepIndex];
+        let nearTarget = false;
+        for (const piece of step.pieces) {
+          if (piece.type === this.activeBrickType && !piece._fulfilled) {
+            const dx = pos.x - piece.x;
+            const dy = pos.y - piece.y;
+            const dz = pos.z - piece.z;
+            const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+            if (dist < GRID.SNAP_THRESHOLD && this.activeBrickRotation === piece.rotY) {
+              nearTarget = true;
+              break;
+            }
+          }
+        }
+
+        if (nearTarget) {
+          this.ghostMaterial.emissive.set(0x44ff44);
+          this.ghostMaterial.emissiveIntensity = 0.6;
+          this.ghostMaterial.opacity = 0.5;
+          this.ghostEdgeMaterial.color.set(0x66ff66);
+          this.ghostEdgeMaterial.opacity = 0.7;
+        } else {
+          // Check occupancy for red warning
+          const occ = this.brickManager.isOccupied(pos.x, pos.y, pos.z);
+          if (occ) {
+            this.ghostMaterial.emissive.set(0xff3333);
+            this.ghostMaterial.emissiveIntensity = 0.5;
+            this.ghostMaterial.opacity = 0.5;
+            this.ghostEdgeMaterial.color.set(0xff4444);
+            this.ghostEdgeMaterial.opacity = 0.7;
+          } else {
+            this.ghostMaterial.emissive.set(this.activeBrickColor);
+            this.ghostMaterial.emissiveIntensity = GHOST_CONFIG.emissiveIntensity;
+            this.ghostMaterial.opacity = GHOST_CONFIG.opacity;
+            this.ghostEdgeMaterial.color.set(0xffffff);
+            this.ghostEdgeMaterial.opacity = 0.5;
+          }
+        }
+      }
+
+      //  POINTER HANDLERS 
+      _onPointerDown(event) {
+        if (this.state === 'STEP_COMPLETE' || this.state === 'PUZZLE_COMPLETE') return;
+
+        if (this.state === 'DRAGGING') {
+          // Update mouse position from click, then attempt to place
+          this._getPointerPosition(event);
+          this._updateGhostTransform();
+          this._attemptPlace();
+          return;
+        }
+
+        // If IDLE with active piece but ghost not yet created (clicked before moving mouse)
+        if (this.state === 'IDLE' && this.activeBrickType !== null) {
+          this.state = 'DRAGGING';
+          this.mainControls.enabled = false;
+          this.rotationHint.classList.add('visible');
+          this._createGhost();
+          this._updateCursorButton();
+          this._getPointerPosition(event);
+          this._updateGhostTransform();
+        }
+      }
+
+      _onPointerMove(event) {
+        if (this.state === 'STEP_COMPLETE' || this.state === 'PUZZLE_COMPLETE') return;
+
+        // Auto-enter DRAGGING when hovering over canvas with an active piece selected
+        if (this.state === 'IDLE' && this.activeBrickType !== null) {
+          this.state = 'DRAGGING';
+          this.mainControls.enabled = false;
+          this.rotationHint.classList.add('visible');
+          this._createGhost();
+          this._updateCursorButton();
+        }
+
+        if (this.state !== 'DRAGGING') return;
+        this._getPointerPosition(event);
+        this._updateGhostTransform();
+      }
+
+      _onPointerUp(_event) {
+        // Placement is handled in _onPointerDown during DRAGGING state
+        // (click-to-place pattern: pointerdown during drag = place attempt)
+      }
+
+      // PLACEMENT 
+      _attemptPlace() {
+        // Use the ghost mesh position directly — what the user sees is where it lands
+        if (!this.ghostMesh) return;
+        const pos = {
+          x: Math.round(this.ghostMesh.position.x),
+          y: Math.round(this.ghostMesh.position.y),
+          z: Math.round(this.ghostMesh.position.z),
+        };
+
+        const step = this._currentPuzzle().steps[this.currentStepIndex];
+
+        // Check occupancy
+        if (this.brickManager.isOccupied(pos.x, pos.y, pos.z)) {
+          this._flashGhostError();
+          this.audio.playError();
+          return;
+        }
+
+        // Find matching target piece
+        let matchedTarget = null;
+        for (const piece of step.pieces) {
+          if (piece.type === this.activeBrickType && !piece._fulfilled) {
+            const dx = pos.x - piece.x;
+            const dy = pos.y - piece.y;
+            const dz = pos.z - piece.z;
+            const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+            if (dist < GRID.SNAP_THRESHOLD && this.activeBrickRotation === piece.rotY) {
+              matchedTarget = piece;
+              break;
+            }
+          }
+        }
+
+        if (!matchedTarget) {
+          // Not at correct position
+          this._flashGhostError();
+          this.audio.playError();
+          return;
+        }
+
+        // SUCCESS — snap the brick
+        matchedTarget._fulfilled = true;
+        this.brickManager.addBrick(
+          this.activeBrickType,
+          matchedTarget.x, matchedTarget.y, matchedTarget.z,
+          matchedTarget.rotY,
+          matchedTarget.color
+        );
+        this.placedBricks.push({
+          type: this.activeBrickType,
+          x: matchedTarget.x, y: matchedTarget.y, z: matchedTarget.z,
+          rotY: matchedTarget.rotY, color: matchedTarget.color
+        });
+
+        this.audio.playSnap(this.activeBrickType);
+
+        // Update inventory
+        this._updateInventoryUI();
+
+        // Check if step complete
+        if (step.pieces.every(p => p._fulfilled)) {
+          this._onStepComplete();
+        } else {
+          // Stay in DRAGGING — user can place another piece of the same type
+          // Or return to IDLE if no more of this type available
+          const remaining = step.pieces.filter(p => p.type === this.activeBrickType && !p._fulfilled);
+          if (remaining.length === 0) {
+            // No more targets of this type in current step
+            this._endDrag();
+          }
+        }
+      }
+
+      _flashGhostError() {
+        if (!this.ghostMesh) return;
+        const origEmissive = this.ghostMaterial.emissive.getHex();
+        this.ghostMaterial.emissive.set(0xff0000);
+        this.ghostMaterial.emissiveIntensity = 0.8;
+        this.ghostEdgeMaterial.color.set(0xff0000);
+        setTimeout(() => {
+          if (this.ghostMesh) {
+            this.ghostMaterial.emissive.set(origEmissive);
+            this.ghostMaterial.emissiveIntensity = GHOST_CONFIG.emissiveIntensity;
+            this.ghostEdgeMaterial.color.set(0xffffff);
+          }
+        }, 250);
+      }
+
+      _onStepComplete() {
+        this.state = 'STEP_COMPLETE';
+        this._endDrag();
+        this.audio.playStepComplete();
+
+        // Brief celebration: pulse bricks
+        this._pulsePlacedBricks();
+
+        const puzzle = this._currentPuzzle();
+        if (this.currentStepIndex >= puzzle.steps.length - 1) {
+          // Puzzle complete!
+          setTimeout(() => {
+            this.state = 'PUZZLE_COMPLETE';
+            this.audio.playVictory();
+            this.completionOverlay.classList.add('visible');
+          }, 1200);
+        } else {
+          // Advance step
+          setTimeout(() => {
+            this.currentStepIndex++;
+            this.activeBrickType = null;
+            this.activeBrickColor = null;
+            this.activeBrickRotation = 0;
+            this.state = 'IDLE';
+            this._updateUI();
+            this._updateCursorButton();
+            this.blueprint.update(
+              puzzle.steps[this.currentStepIndex].pieces,
+              this.brickManager.geometries
+            );
+          }, 1200);
+        }
+      }
+
+      _pulsePlacedBricks() {
+        // Brief visual pulse on the scene background
+        const origBg = this.mainScene.background.getHex();
+        this.mainScene.background.set(0x1a1a2a);
+        setTimeout(() => this.mainScene.background.setHex(origBg), 300);
+      }
+
+      _cancelDrag() {
+        this._endDrag();
+        this.activeBrickType = null;
+        this.activeBrickColor = null;
+        this._updateCursorButton();
+      }
+
+      _deselectAll() {
+        // Return to normal cursor / orbit mode
+        this._removeGhost();
+        this.mainControls.enabled = true;
+        this.rotationHint.classList.remove('visible');
+        this.activeBrickType = null;
+        this.activeBrickColor = null;
+        this.activeBrickRotation = 0;
+        if (this.state === 'DRAGGING') this.state = 'IDLE';
+        if (this.state === 'STEP_COMPLETE') this.state = 'IDLE';
+        this._updateCursorButton();
+        this._updateInventoryUI();
+      }
+
+      _updateCursorButton() {
+        const btn = document.getElementById('btn-cursor');
+        if (this.activeBrickType !== null || this.state === 'DRAGGING') {
+          btn.classList.add('active');
+          btn.textContent = '🖱️ Deselect (Esc)';
+        } else {
+          btn.classList.remove('active');
+          btn.textContent = '🖱️ Cursor Mode';
+        }
+      }
+
+      _endDrag() {
+        this._removeGhost();
+        this.state = this.state === 'STEP_COMPLETE' ? 'STEP_COMPLETE' : 'IDLE';
+        this.mainControls.enabled = true;
+        this.rotationHint.classList.remove('visible');
+        this.activeBrickRotation = 0;
+        // Don't clear activeBrickType — user might want to place another
+        this._updateCursorButton();
+        this._updateInventoryUI();
+      }
+
+      // INVENTORY UI 
+      _updateInventoryUI() {
+        const step = this._currentPuzzle().steps[this.currentStepIndex];
+        // Count remaining pieces per type+color combo
+        const inventory = new Map(); // key: "type|color" -> { type, color, total, fulfilled }
+        for (const piece of step.pieces) {
+          const key = `${piece.type}|${piece.color}`;
+          if (!inventory.has(key)) {
+            inventory.set(key, { type: piece.type, color: piece.color, total: 0, fulfilled: 0 });
+          }
+          const entry = inventory.get(key);
+          entry.total++;
+          if (piece._fulfilled) entry.fulfilled++;
+        }
+
+        this.inventoryEl.innerHTML = '';
+        for (const [, item] of inventory) {
+          const remaining = item.total - item.fulfilled;
+          const card = document.createElement('div');
+          card.className = 'piece-card';
+          if (remaining <= 0) card.classList.add('placed');
+          if (this.activeBrickType === item.type && this.activeBrickColor === item.color && this.state !== 'STEP_COMPLETE') {
+            card.classList.add('active');
+          }
+
+          const swatch = document.createElement('div');
+          swatch.className = 'swatch';
+          swatch.style.backgroundColor = '#' + item.color.toString(16).padStart(6, '0');
+
+          const name = document.createElement('div');
+          name.className = 'piece-name';
+          name.textContent = BRICK_NAME[item.type];
+
+          const count = document.createElement('div');
+          count.className = 'piece-count';
+          count.textContent = remaining > 0 ? `${item.fulfilled}/${item.total} placed` : '✓ Done';
+
+          card.appendChild(swatch);
+          card.appendChild(name);
+          card.appendChild(count);
+
+          if (remaining > 0) {
+            card.addEventListener('click', () => {
+              if (this.state === 'STEP_COMPLETE' || this.state === 'PUZZLE_COMPLETE') return;
+              const typeChanged = this.activeBrickType !== item.type;
+              this.activeBrickType = item.type;
+              this.activeBrickColor = item.color;
+              this.activeBrickRotation = 0;
+              this.ghostMaterial.color.set(item.color);
+              this.ghostMaterial.emissive.set(item.color);
+              this.audio._ensure(); // init audio
+              // If already dragging and brick type changed, recreate ghost with new geometry
+              if (this.state === 'DRAGGING' && typeChanged) {
+                this._removeGhost();
+                this._createGhost();
+              }
+              this._updateCursorButton();
+              this._updateInventoryUI();
+            });
+          }
+
+          this.inventoryEl.appendChild(card);
+        }
+      }
+
+      _updateUI() {
+        const puzzle = this._currentPuzzle();
+        const step = puzzle.steps[this.currentStepIndex];
+        this.stepBadge.innerHTML = `Step <strong>${this.currentStepIndex + 1}</strong> / ${puzzle.steps.length} — ${step.name}`;
+        this._updateInventoryUI();
+      }
+
+      //  PUZZLE MANAGEMENT 
+      _currentPuzzle() {
+        return PUZZLES[this.currentPuzzleId];
+      }
+
+      _loadPuzzle(puzzleId) {
+        this.currentPuzzleId = puzzleId;
+        this.currentStepIndex = 0;
+        this.activeBrickType = null;
+        this.activeBrickColor = null;
+        this.activeBrickRotation = 0;
+        this.placedBricks = [];
+        this.state = 'IDLE';
+        this.brickManager.clearAll();
+        this._removeGhost();
+
+        // Reset fulfillment flags
+        const puzzle = PUZZLES[puzzleId];
+        for (const step of puzzle.steps) {
+          for (const piece of step.pieces) {
+            piece._fulfilled = false;
+          }
+        }
+
+        this.completionOverlay.classList.remove('visible');
+        this._updateUI();
+        this._updateCursorButton();
+        this.blueprint.update(puzzle.steps[0].pieces, this.brickManager.geometries);
+
+        // Reset camera
+        this.mainCamera.position.set(7, 5.5, 8);
+        this.mainControls.target.set(0, 1, 0);
+        this.mainControls.update();
+      }
+
+      _playAgain() {
+        this._loadPuzzle(this.currentPuzzleId);
+      }
+
+      //  URL SHARING 
+      _encodeBricks(bricks) {
+        // 5 bytes per brick: type(1), x+128(1), y(1), z+128(1), rotY(1)
+        const bytes = new Uint8Array(1 + bricks.length * 5);
+        bytes[0] = bricks.length;
+        for (let i = 0; i < bricks.length; i++) {
+          const b = bricks[i];
+          const off = 1 + i * 5;
+          bytes[off] = b.type;
+          bytes[off + 1] = b.x + 128;
+          bytes[off + 2] = b.y;
+          bytes[off + 3] = b.z + 128;
+          bytes[off + 4] = b.rotY;
+        }
+        // Convert to binary string then base64
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
+      }
+
+      _decodeBricks(base64) {
+        try {
+          const binary = atob(base64);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+          }
+          const count = bytes[0];
+          const bricks = [];
+          for (let i = 0; i < count; i++) {
+            const off = 1 + i * 5;
+            bricks.push({
+              type: bytes[off],
+              x: bytes[off + 1] - 128,
+              y: bytes[off + 2],
+              z: bytes[off + 3] - 128,
+              rotY: bytes[off + 4],
+            });
+          }
+          return bricks;
+        } catch (_) { return null; }
+      }
+
+      _shareCreation() {
+        if (this.placedBricks.length === 0) {
+          this._showToast('Nothing to share yet — place some bricks first!');
+          return;
+        }
+        const encoded = this._encodeBricks(this.placedBricks);
+        window.location.hash = encoded;
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          this._showToast('🔗 Link copied! Share it to show your creation.');
+        }).catch(() => {
+          this._showToast('🔗 Link ready! Copy the URL from your address bar.');
+        });
+      }
+
+      _checkHash() {
+        const hash = window.location.hash.slice(1);
+        if (!hash) return;
+        const bricks = this._decodeBricks(hash);
+        if (!bricks || bricks.length === 0) return;
+        // Rebuild from hash
+        this.brickManager.clearAll();
+        let paletteIdx = 0;
+        for (const b of bricks) {
+          const color = b.color || COLOR_PALETTE[paletteIdx % COLOR_PALETTE.length];
+          this.brickManager.addBrick(b.type, b.x, b.y, b.z, b.rotY, color);
+          paletteIdx++;
+        }
+        this.placedBricks = bricks.map((b, i) => ({
+          ...b,
+          color: b.color || COLOR_PALETTE[i % COLOR_PALETTE.length],
+        }));
+        this.state = 'PUZZLE_COMPLETE';
+        this._updateUI();
+        this._showToast('📦 Loaded shared creation!');
+      }
+
+      _showToast(msg) {
+        this.toastEl.textContent = msg;
+        this.toastEl.classList.add('show');
+        clearTimeout(this._toastTimeout);
+        this._toastTimeout = setTimeout(() => {
+          this.toastEl.classList.remove('show');
+        }, 2500);
+      }
+
+      // RENDER LOOP 
+      _animate() {
+        requestAnimationFrame(() => this._animate());
+        this.mainControls.update();
+        this.mainRenderer.render(this.mainScene, this.mainCamera);
+        this.blueprint.render();
+      }
     }
 
-    update(steppieces, brickgeometries) {
-    // Clear old meshes (do NOT dispose geometries — they are shared with main scene)
-     for (const  m of this.targetMeshes) {
-     this.scene.remove(m);
-     }
-     this.targetmeshes = [];
-     
-     if (!steppieces || steppieces.length === 0) return;
-
-     // calculate bounding box of target pieces
-     let minx = infinity, miny = infinity, minz = infinity;
-     let maxx = -infinity, maxy = -infinity,max2 = -infinity;
-
-     for (const piece of steppieces) {
-      const geo = brickgeometries[piece.type];
-
-     // Per-piece colored material — shows the actual brick color with transparency
-     const mat = three.meshstandardmaterial({ 
-      ...mat_config,
-      color: piece.color,
-      transparent: true,
-      opacity: 0.65,
-      emissive: piece.color,
-      emissivintensity: 0.15,
-      depthwrite: true,
-     });
-     
-     const mesh = new three.mesh(geo,mat);
-     const rady = (piece.roty * math.pi) / 2;
-     mesh.position.set(piece.x, pice.y, piece.z);
-     mesh.rotation.y = rady;
-     mesh.castshadow = false;
-     mesh.receiveshadow = true;
-     this.scene.add(mesh);
-     this.targetmeshes.push(mesh);
-
-     // thin edge outline so pieces are  clearly visible even when transparent
-     const edgegeo = new three.edgesgeometry(geo, 20);
-     const edgemat = new three.linebasicmaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.5,
-      depthtest: true,
-     });
-     const edgeline = new three.linesegment(edgegeo, edgemat);
-     mesh.add(edgeline);
-
-     // track bounds 
-     minx = math.min(minx, piece.x - 0.5);
-     miny = math.min(miny, piece.y);
-     maxx = math.max(maxx, piece.x + 0.5);
-     maxy = math.max(maxy, piece.y + 1);
-     minz = math.min(minz,piece.z - 0.5);
-     maxz = math.max(maxz, piece.z + 0.5);
-    }
-
-    // Center camera on model
-    const cx = (minx + maxx) / 2;
-    const cy = (miny + maxy) / 2;
-    const cz = (minz + maxz) 2;
-    const span = math.max(maxx - minx, maxz - minz, 2) * 1.8;
-
-    this.controls.target.set(cx, cy, cz);
-    this.camera.position.set(cx + span * 0.7, cy + span * 0.5, cz + span);
-    this.camera.lookat(cx, cy, cz);
-    this.controls.update();
-  }
-
-  resize() {
-    const rect = this.container.getboundingclientrect();
-    this.renderer.setsize(rect.width, rect.height);
-    this.camera.aspect = rect.width / math.max(rect.height, 1);
-    this.camera.updatep0rojectionmatrix();
-  }
-
-  render () {
-    this.contrils.update();
-    this.renderer.render(this.scene, this.camera);
-  }
-}
-
-// ==================== MAIN APPLICATION ====================
-class brickquestapp {
-  constructor() {
-    // dom refs
-    this.maincontainer = doucument.getelementbyid('main-vp-contqainer');
-     this.sidebarcontainer = doucument.getelementbyid('sidebar-vp-container');
-     this.inventoryel = document.getelementbyid('inventory-oieces');
-     this.stepbadge = document.getelementbyid('step-badge');
-     this.rotationhint = document.getelementbyid('rotation-hint');
-     this.toastel = document.getelementsbyid('toast');
-     this.completionoverlay = document.getelementbyid('completion-overlay');
-     this.puzzleslect = document.getelementsbyid('puzzle-select');
-
-     // audio 
-     this.audio = new audioengine()
-
-     // main scene 
-     this.mainrenderer = createrenderer(this.maincontainer);
-     this.mainscene = new three.scene();
-     this.mainscope.background = new three.color(0x0a0a10);
-     this.mainscene.fog = new three.fog(0x0a0a10,5,30);
-
-const mainrect = this.maincontainer.getboundingclientrect();
-this.maincamera = new three.perspectivecamera(50, mainrect.width / math.max(mainrect.height,1), 0.1, 60);
-this.maincamera.position.set(7, 5.5, 8);
-this.maincamera.lookat(0, 1, 0);
-
-this.maincontrols = new orbitcontrols(this.maincamera, this.mainrenderer.domelement);
-this.maincontrols.target.set(0, 1, 0);
-this.maincontrols.enabledaming = true;
-this.maincontrols.dampingfactors = 0.08;
-this.maincontrols.enablezoom = true;
-this.maincontrols.zoomspeed = 1.2;
-this.maincontrols.mindistance = 2;]
-this.maincontrols.maxdistance = 30;
-this.maincontrols.maxpolarangle = math.pi * 0.78;
-this.maincontrols.update();
-
-createlighting(this.mainscene);
-createground(this.mainscene);
-
-//brick manager 
-this.brickmanager = new brickmanager(this.mainscene);
-
-//sidebar blueprint
-this.blueprint = newblueprintscene(this.sidebarcontainer);
-
-// ghost preview 
-this.ghostmesh = null;
-this.ghostmaterial = new three.meshstandardmaterial({
-  ...mat_config,
-  color: 0xffffff,
-  transparent: true,
-  opacity: ghost_config.opacity,
-  emissive: 0xffffff,
-  emissiveintensity:ghost_config.emissiveintensity,
-  depthwrite: false,
-});
-//glow edge for ghost
-this.ghostedgematerial = new three.linebasicmaterial({
-  color: 0xffffff,
-  transparent: true,
-  opacity: 0.5,
-  depthtest: true,
-  depthwrites: false,
-});
-this.ghostedge = null;
-
-// raycaster
-this.raycaster = new three.raycaster();
-this.mouse = new three.vector2();
-
-//game state 
-this.state = 'idle'; // idle | dragging | step_complete | puzzle_complete 
-this.currentpuzzleid = 'pyramid';
-this.currentstepindex = 0;
-this.activebricktype = null; // which brick type is being dragged
-this.activebrickcolor = null;
-this.activebrickrotation = 0;
-this.placedbrick = []; //  type, x, y, z, roty, color }
-this.stepfulfilled = []; // per-step: set of fulfilled piece indices 
-
-// binding 
-this._onpointerdown = this._onepointerdown.bind(this);
-this._onpointermove = this._onpointermove.bind(this);
-this._onpointerup = this._onpoiterup.bind(this);
-this._onkeydown = this._onkeydown.bind(this);
-this._onresize = this._onresize.bind(this);
-this._oncontextmenu = this._oncontextmenu.bind(this);
-
-//setup
-this._bindevents();
-this._loadpuzzle(this.currentpuzzleid);
-
-// check url hash 
-this._checkhash();
-
-// start 
-this._animate();
-}
-
-// ==================== EVENTS ====================
-_bindevents(){
-this.mainrenderer.domelement.addeventlistener('pointerdown', this._onpointerdown);
-this.mainrenderer.domelement.addeventlistener('pointermove', this._onpointermove);
-this.mainrenderer.domelement.addeventlistener('pointerup',this._onpoiterup);
-this.mainRenderer.domElement.addEventListener('contextmenu', this._onContextMenu);
-window.addeventlistener('keydown',this._onkeydown.);
-window.addeventlistener('resize', this._onresize);
-
-document.getelementbyid('btn-share').addeventlistener('click', ()=> this._sharecreation());
-document.getElementById('btn-share-complete').addEventListener('click', () => this._shareCreation());
-document.getElementById('btn-play-again').addEventListener('click', () => this._playAgain());
-  document.getElementById('btn-cursor').addEventListener('click', () => this._deselectAll());
-  this.puzzleselect.addeventlistener('change', (e) => {
-    this._loadpuzzle(e.target.value);
-  });
-}
-
-_oncontextmenu(e) {
-  e.preventdefault();
-  if (this.state === 'dragging' || this.activebricktype !== null) {
-    this._deselectall();
-  }
-}
-
-_onekeydown(e) {
-  if (e.key === 'r' || e.key === 'r') {
-    if (this.state === 'dragging') {
-      this.activebrickrotation = (this.activebrickrotation + 1) % 4;
-      this._updateghosttransform();
-      this.audio.ensure(); // init audio context on user gesture 
-    }
-  }
-  if (e.key === 'escape') {
-    if (this.state === 'dragging') {
-      this._deselectall()
-    } else if (this.activebricktype !== null) {
-      this._deselect
-    }
-  }
-}
-
-_onresize() {
-  const mainrect = this.maincontainer.getboundingclientrect();
-  this.mainrenderer.setsize(mainrect.width, mainrect.height);
-  this.maincamera.aspect = mainrect.width / math.max(mainrect.height, 1);
-  this.maincamera.updateprojectionmatrix();
-  this.blueprint.resize();
-}
-
-_getpointerposition(event) {
-  const rect = this.mainrenderer.domelement.getboundingclientrect();
-  this.mouse.x = ((event.clientx - rect.left) / rect.width) * 2 - 1;
-  this.mouse.y = -((event.clienty - rect.top) / rect.height) * 2 + 1;
-}
-
-// ==================== RAYCASTING ====================
-_raycastGrid() {
-  this.raycaster.setfromcamera(this.mouse, this.maincamera);
-  const target = [...this.brickmanager.allmeshes, this.mainscene.getobjectbyname('ground')];
-  constintersects = this.raycaster.intersectobjects(target,false);
-
-  if (intersects.length === 0) return null;
-
-  const hit = intersects[0];
-  const point = hit.point.clone();
-
-  // determine grid y based on what we hit 
-  let gridy;
-  if (hit.object.name === 'ground' || hit.object.name === 'border' || hit.object.name === 'grid') {
-  gridy = 0;
-  } else { 
-    // hit an existing brick. brick are 1 unit tall with bottom pivot.
-    // the top face of a bricks at y=n is at y=n+1.
-    // use math.round on the hit y  since bricks occupy integer y levels.
-    gridy = math.round(point.y);
-    // ensure we're placing on top (not inside)the hit brick
-    if (gridy <= math.floor(point.y)) gridy = math.floor(point.y) + 1;
-  }
-
-  //snap to grid 
-  const gridx = math.round(point.x);
-  const gridz = math.round(point.z);
-  
-  // clamp
-  const cx = math.max(grid.min x. math.min(grid.max x. gridx));
-  const cz = math.max(grid.min_z, math.min(grid.max_z, gridz));
-  const cy = math.max(0, math.min(grid.max_z, gridy));
-
-  return { x: cx, y: cy, z: cz };
-}
-
-// ==================== GHOST PREVIEW ====================
-_createGhost() {
-  if ( this.ghostmesh) this._removeghost();
-
-  const geo = this. brickmanager.geometries[this.activebricktype];
-  this..ghostmesh = new three.mesh(geo, this.ghostmaterial);
-  this.ghostmesh.renderorder = 1;
-  this.ghostmesh.material.depthtest = true;
-  this.ghostmesh.material.depthwrite = false;
-  this.mainscene.add(this.ghostmesh);
-
-  // edge wireframe for clarity 
-  const edgegeo = new three.edgesgeometry(geo, 15);
-  this.ghostedge = new three.line4segments(edgegeo,this.ghostedgematerial);
-  this.ghostedge.renderorder = 2;
-  this.ghostedge.material.depthtest = true;
-  this.ghostedge.material.depthwrite = false;
-  this.ghostmesh.add(this.ghostedge);
-
-  this._updateghosttransform();
-}
-
-_removeghost() {
-if (this.ghostmesh) {
-  this.mainscene.remove(this.ghostmesh);
-  if (this.ghostmesh.geometry) {
-    // don't dispose - shared with instancedmesh
-  }
-  this.ghostmesh = null;
-  this.ghostedge = null;
-}
-}
-
-_updateghosttransform(){
-  if (! this.ghostmesh) return;
-  cont pos = this._raycastergrid ();
-  if (!pos) return;
-  this.ghostmesh.position.set(pos.x, pos.y, pos.z);
-  this.ghostmesh.roatation.set(0, (this.activebrickrotation * math.pi) / 2, 0);
-
-  // color feedback: check proximity to any valid target 
-  const step = this._currentpuzzle().step[this.curremtstepindex];
-  
-
-  
-
-
-
-
-  
-  
-      
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-        
-
-    
-    
-
-      
-      
-
-
-
-
-
-
-
-
-
-
-     }
-
-   
+    //  BOOTSTRAP 
+    const app = new BrickQuestApp();
+    console.log('🧱 BrickQuest 3D ready!');
+    console.log('  - Click a piece in the inventory shelf to select it');
+    console.log('  - Click in the 3D viewport to place it at the ghost position');
+    console.log('  - Press R to rotate the piece');
+    console.log('  - Press Escape to cancel');
+    console.log('  - Match the blueprint in the sidebar');
+  </script>
+</body>
+</html>
